@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>KB Utils</title>
+        <link rel="stylesheet" href="main.css"/>
+
+        <!-- Include eel.js - note this file doesn't exist in the 'web' directory -->
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript" src="utils.js"></script>
+        <script type="text/javascript">
+            window.onload = function() { loadParams(); }
+            window.onbeforeunload = function() { saveParams(); }
+            var initialized = false;
+
+            async function saveParams() {
+                if (!initialized) return;
+                var x = getParams();
+                x = await eel.saveParams(x);
+            }
+            
+            async function loadParams() {
+                x = await eel.loadParams()();
+                setParams(x);
+                makeTextList(x.txtListEdit);
+                initialized = true;
+            }
+            
+            async function reload() {
+                x = await saveParams();
+                x = await loadParams();
+            }
+
+            function makeTextList(x) {
+                s = "";
+                //alert(x);
+                a = x.split("\n");
+                a.forEach(e => {
+                    if (!e.startsWith("#"))
+                        s += "<a href='#' onclick='eel.sendText(this.innerHTML)'>" + e + "</a><br>\n";
+                });
+                divTextList.innerHTML = s;
+            }
+
+            function resize() {
+                txta.style.height = (window.innerHeight - txta.offsetTop - 2 * txta.offsetLeft) + "px";
+                txtListEdit.style.height = (window.innerHeight - txtListEdit.offsetTop - 2 * txtListEdit.offsetLeft) + "px";
+            }
+            
+            function selTab(evt, tabName) {
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+
+                document.getElementById(tabName).style.display = "block";
+                evt.currentTarget.className += " active";
+                resize();
+                saveParams();
+                makeTextList(x.txtListEdit);
+            } 
+        </script>
+    </head>
+
+    <body id="body" style="overflow:hidden;" onresize="resize()">
+        <style>
+        </style>
+        <div class="tab">
+            <button class="tablinks" id="defaultTab" onclick="selTab(event, 'divPrefixFile')">PrefixFile</button>
+            <button class="tablinks" onclick="selTab(event, 'divSettings')">Settings</button>
+            <button class="tablinks" onclick="selTab(event, 'divInfo')">Info</button>
+        </div>
+        <hr style="margin-top:0px;">
+        <div id="divPrefixFile" class="tabcontent">
+            <input type="button" class="btn" value="Macro1" onclick="eel.sendMacro('Marco1')">
+            <input type="checkbox" save="checked" id="chkPostfix" onclick="saveParams()">Postfix
+            <br />
+            <input type="button" class="btn" value="Macro2" onclick="eel.sendMacro('Marco2')">
+            <input type="checkbox" save="checked" id="chkDash" onclick="saveParams()">Dash
+            <br />
+            <input type="button" class="btn" value="Clipboard" onclick="eel.sendText('clipboard')">
+            <input type="checkbox" save="checked" id="chkPotpl" onclick="saveParams()">PotPlayer
+            <hr>
+            <div id="divTextList">
+            </div>
+        </div>
+        <div id="divSettings" class="tabcontent" >
+            <table width="100%">
+                <colgroup>
+                    <col style="width: 120px">
+                    <col style="width: 88%">
+                </colgroup>
+                <tr>
+                    <td>Dir</td>
+                    <td><input type="search" id="txtDir" class="max" save="value" /></td>
+                </tr><tr>
+                    <td></td>
+                    <td><input type="checkbox" id="chkClipmon" save="checked" />auto paste from clipboard</td>
+                </tr>
+            </table>
+            TextList:<br/><textarea id="txtListEdit" class="max" save="value" style="resize:none;"></textarea>
+        </div>
+        <div id="divInfo" class="tabcontent" >
+            Info:<br/><textarea id="txta" class="max" style="resize:none;"></textarea>
+        </div>
+    </body>
+    <script>
+        document.getElementById("defaultTab").click();
+        resize();
+    </script>
+</html>

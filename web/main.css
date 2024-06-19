@@ -1,0 +1,72 @@
+* {
+    font-family: arial;
+    font-size: 10pt;
+    vertical-align: middle;
+}
+
+.max {
+    width: 100%;
+    padding: 2px;
+}
+
+.hide {
+    display: none
+}
+
+.btn {
+    width: 80px;
+    height: 26px;
+    margin-top: 2px;
+    background-color: black;
+    color: white;
+}
+
+.img {
+    width: 24px;
+    height: 24px;
+    display: inline;
+}
+
+.header {
+    font-size: 12pt;
+    font-weight: bold;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 2px 2px;
+}
+
+tr,
+td,
+body,
+a {
+    background-color: rgb(80, 80, 80);
+    color: white;
+}
+
+/* fix textarea width 
+#divInfo {
+    margin: 0px 10px 0px 2px;
+}*/
+
+.tab {
+    overflow: hidden;
+    background-color: inherit;
+}
+
+.tab button {
+    color: white;
+    background-color: inherit;
+    float: left;
+    border: none;
+    padding: 4px 10px;
+}
+
+.tab button.active {
+    background-color: #202020;
+}
+
+.tabcontent {
+    display: none;
+}
