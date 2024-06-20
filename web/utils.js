@@ -109,7 +109,7 @@ window.ondrop = function(ev) {
 }
 
 
-// there can be a textarea txta for logging
+// there can be a textarea txta for logging/info
 // with autoscroll and text limit
 
 var prmax = 20000;
@@ -135,3 +135,22 @@ function toggleShow(id) {
   x.display = x.display == "none" ? "inline" : "none";
   resize()
 }
+
+
+// tab selector
+
+function selectTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+} 

@@ -45,10 +45,15 @@ a {
     color: white;
 }
 
-/* fix textarea width 
-#divInfo {
-    margin: 0px 10px 0px 2px;
-}*/
+/* fix textarea width */
+.divtext {
+    margin: 0 10px 0 2px;
+}
+
+textarea {
+    width: 100%;
+    resize: none;
+}
 
 .tab {
     overflow: hidden;

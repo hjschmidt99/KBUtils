@@ -24,11 +24,13 @@ xparam = {
     "chkDash": False,
     "chkPotpl": False,
     "chkClipmon": False,
-    "sendMacro": { 
-        "Marco1": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del"],
-        "Marco2": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del, enter", 500, "down"],
-    },
-    "txtListEdit": "prefix1\nprefix2"
+    "txtListEdit": "prefix1\n#prefix2\nprefix3",
+}
+
+macros = { 
+    "Marco1": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del"],
+    "Marco2": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del, enter", 500, "down"],
+    "CopyAll": ["alt+tab", 500, "ctrl+a, ctrl+c, ctrl+shift+home, ctrl+shift+home"],
 }
 
 # load parameter file, always merge to xparam
@@ -75,9 +77,23 @@ def sendText(x):
 @eel.expose
 def sendMacro(k):
     print(f'sendMacro {k}')
-    mac = xparam["sendMacro"]
-    if k in mac.keys():
-        qSend.put(mac[k])
+    if k in macros.keys():
+        qSend.put(macros[k])
+
+@eel.expose
+def copy(x):
+    clipboard.copy(x)
+
+@eel.expose
+def doCmd(cmd, p=None):
+    print(f'doCmd {cmd}')
+
+    if cmd == "FromClipb":
+        qSend.put("text2Link")
+
+    if cmd == "CopyAll":
+        sendMacro("CopyAll")
+        qSend.put("text2Link")
 
 def doSend(a):
     dump(a)
@@ -88,13 +104,15 @@ def doSend(a):
             keyboard.write(x[1:])
         else:
             keyboard.send(x)
-    #s = json.dumps(a)
 
 def worker():
     while 1:
         try:
             a = qSend.get()
-            doSend(a)
+            if isinstance(a, list):
+                doSend(a)
+            if isinstance(a, str):
+                if a == "text2Link": eel.text2Link(clipboard.paste())
         except:
             traceback.print_exc()
         time.sleep(1)
