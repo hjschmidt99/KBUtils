@@ -22,10 +22,13 @@
 }
 
 .img {
-    width: 24px;
-    height: 24px;
-    display: inline;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
 }
+
+.right { float: right; }
 
 .header {
     font-size: 12pt;
@@ -46,13 +49,27 @@ a {
 }
 
 /* fix textarea width */
-.divtext {
-    margin: 0 10px 0 2px;
+.divText {
+    margin-right: 6px;
+    margin-left: 2px;
+}
+
+#divTextList a {
+    text-decoration: none;
 }
 
 textarea {
     width: 100%;
     resize: none;
+}
+
+dialog {
+    max-width: 90%;
+    min-width: 40%;
+    border-radius: 8px;
+    border: 2px solid black;
+    background-color: lightyellow;
+    overflow: hidden;
 }
 
 .tab {

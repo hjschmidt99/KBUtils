@@ -70,7 +70,7 @@
             function resize() {
                 resizeElement(txta);
                 resizeElement(divTextList);
-                resizeElement(txtListEdit);
+                //resizeElement(txtListEdit);
                 resizeElement(divLinks);
             }
             
@@ -88,14 +88,15 @@
         </style>
         <div class="tab">
             <button class="tablinks" id="defaultTab" onclick="selTab(event, 'divPrefixFile')">PrefixFile</button>
-            <button class="tablinks" onclick="selTab(event, 'divSettings')">Settings</button>
             <button class="tablinks" onclick="selTab(event, 'divText2Link')">Text2Link</button>
             <button class="tablinks" onclick="selTab(event, 'divInfo')">Info</button>
         </div>
         <hr style="margin-top:0px;">
+        
         <div id="divPrefixFile" class="tabcontent">
             <input type="button" class="btn" value="Macro1" onclick="eel.sendMacro('Marco1')">
             <input type="checkbox" save="checked" id="chkPostfix" onclick="saveParams()">Postfix
+            <image class="img right" title="options" onclick="dlgTextList.showModal()" src="settings2w.png" />
             <br />
             <input type="button" class="btn" value="Macro2" onclick="eel.sendMacro('Marco2')">
             <input type="checkbox" save="checked" id="chkDash" onclick="saveParams()">Dash
@@ -106,7 +107,12 @@
             <div id="divTextList" style="overflow:auto">
             </div>
         </div>
-        <div id="divSettings" class="tabcontent" >
+        <dialog id="dlgTextList">
+            TextList:<br/><textarea id="txtListEdit" rows="12" save="value"></textarea><br><br>
+            <button onclick="dlgTextList.close(); reload();">Close</button>
+        </dialog>
+        
+        <dialog id="dlgSettings">
             <table width="100%">
                 <colgroup>
                     <col style="width: 120px">
@@ -120,16 +126,17 @@
                     <td><input type="checkbox" id="chkClipmon" save="checked" />auto paste from clipboard</td>
                 </tr>
             </table>
-            <div class="divText">TextList:<br/><textarea id="txtListEdit" save="value"></textarea></div>
-        </div>
+        </dialog>
+        
         <div id="divText2Link" class="tabcontent">
             <input type="button" class="btn" value="FromClipb" onclick="eel.doCmd('FromClipb')">
             <input type="button" class="btn" value="CopyAll" onclick="eel.doCmd('CopyAll')">
             <div id="divLinks" style="overflow:auto">
             </div>
         </div>
+        
         <div id="divInfo" class="tabcontent" >
-            <div class="divText"></div>Info:<br/><textarea id="txta"></textarea></div>
+            <div class="divText">Info:<br/><textarea id="txta"></textarea></div>
         </div>
     </body>
     <script>
