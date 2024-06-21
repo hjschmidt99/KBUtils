@@ -4,6 +4,7 @@ import os
 import json
 import subprocess
 import time
+import datetime
 import traceback
 import eel
 import clipboard
@@ -27,12 +28,6 @@ xparam = {
     "txtListEdit": "prefix1\n#prefix2\nprefix3",
 }
 
-macros = { 
-    "Marco1": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del"],
-    "Marco2": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del, enter", 500, "down"],
-    "CopyAll": ["alt+tab", 500, "ctrl+a, ctrl+c, ctrl+shift+home, ctrl+shift+home"],
-}
-
 # load parameter file, always merge to xparam
 fn = os.path.splitext(os.path.abspath(sys.argv[0]))[0]
 fncfg = fn + ".json"
@@ -46,7 +41,8 @@ def dump(o):
     print(json.dumps(o, indent=4))
 
 @eel.expose
-def saveParams(x):
+def saveParams(x, closing=False):
+    if closing: saveClips(clips)
     for k in x.keys():
         xparam[k] = x[k]
     with open(fncfg, 'w') as f1:
@@ -57,6 +53,15 @@ def saveParams(x):
 def loadParams():
     dump(xparam)
     return xparam
+
+
+### Send key presses ######################################
+
+macros = { 
+    "Marco1": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del"],
+    "Marco2": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del, enter", 500, "down"],
+    "CopyAll": ["alt+tab", 500, "ctrl+a, ctrl+c, ctrl+shift+home, ctrl+shift+home"],
+}
 
 qSend = queue.Queue()
 
@@ -121,6 +126,54 @@ th1 = threading.Thread(target=worker, daemon=True)
 th1.start()
 
 
+### Clipboard monitor #####################################
+
+clips = []
+maxTextLen = 2000
+maxNameLen = 30
+maxClips = 200
+fnclips = fn + ".clips.json"
+
+def loadClips():
+    try:
+        if os.path.exists(fnclips):
+            with open(fnclips, 'r') as f1:
+                return json.load(f1)
+    except:
+        traceback.print_exc()
+    return []
+
+def saveClips(clips):
+    try:
+        with open(fnclips, 'w') as f1:
+            json.dump(clips, f1, indent=2)
+    except:
+        traceback.print_exc()
+
+clips = loadClips()
+
+@eel.expose
+def getClips():
+    return clips
+
+def newText(s):
+    global clips
+    print(s)
+    if len(s) > maxTextLen: return
+
+    n = s if len(s) < maxNameLen else s[:maxNameLen] + "..."
+    x = {
+        "time": datetime.datetime.now().replace(microsecond=0).isoformat(sep=" "),
+        "size": len(s),
+        "name": n,
+        "data": s
+    }
+    clips.append(x)
+    if len(clips) > maxClips: clips = clips[1:]
+
+
+### Start UI ##############################################
+
 #cmdline_args = []    
 cmdline_args = ["–disable-translate", "–incognito", 
     f"--window-position={xparam['x']},{xparam['y']}", 
@@ -137,6 +190,7 @@ eel.start('main.html',
 
 lastClip = ""
 lastexp = None
+
 while True:
     eel.sleep(1.0)  
 
@@ -145,10 +199,11 @@ while True:
         if xparam["chkClipmon"]:
             clip = clipboard.paste()
             if clip and clip != lastClip:
-                #decodePaste(clip)
+                newText(clip)
                 lastClip = clip
 
     except:
         lastexp = traceback.format_exc()
         print(lastexp)
  
+a = 1

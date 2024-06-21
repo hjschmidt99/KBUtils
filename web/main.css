@@ -92,3 +92,16 @@ dialog {
 .tabcontent {
     display: none;
 }
+
+.clipmon-table {
+    border-collapse: collapse;
+    border-spacing: 2px 2px;
+    border: 1px solid black;
+}
+
+.clipmon-th,
+.clipmon-td {
+    border: 1px solid #bbb;
+    padding: 2px;
+}
+

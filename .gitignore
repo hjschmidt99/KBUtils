@@ -7,6 +7,7 @@ queue/
 
 # my project
 KBUtils.json
+KBUtils.clips.json
 
 # C extensions
 *.so

@@ -3,22 +3,24 @@
     <head>
         <title>KB Utils</title>
         <link rel="stylesheet" href="main.css"/>
+        <link rel="stylesheet" href="gridjs-dark.css"/>
 
         <!-- Include eel.js - note this file doesn't exist in the 'web' directory -->
         <script type="text/javascript" src="/eel.js"></script>
         <script type="text/javascript" src="utils.js"></script>
+        <script type="text/javascript" src="gridjs.production.min.js"></script>
         <script type="text/javascript">
-            window.onload = function() { loadParams(); }
-            window.onbeforeunload = function() { saveParams(); }
+            window.onload = function() { loadParams(true); }
+            window.onbeforeunload = function() { saveParams(true); }
             var initialized = false;
 
-            async function saveParams() {
+            async function saveParams(closing=false) {
                 if (!initialized) return;
                 var x = getParams();
-                x = await eel.saveParams(x);
+                x = await eel.saveParams(x, closing);
             }
             
-            async function loadParams() {
+            async function loadParams(first=false) {
                 x = await eel.loadParams()();
                 setParams(x);
                 makeTextList();
@@ -59,18 +61,44 @@
 
             eel.expose(setInnerHtml)
             function setInnerHtml(id, s) {
-                alert(s);
+                //alert(s);
                 e(id).innerHTML = s;
             }
 
-            function resizeElement(e) {
-                e.style.height = (window.innerHeight - e.offsetTop - 2 * e.offsetLeft) + "px";
+            var clips;
+            var grid;
+
+            eel.expose(clipmonInit)
+            function clipmonInit(data) {
+                clips = data;
+                prl(clips);
+                grid = new gridjs.Grid({
+                    columns: [
+                        { id: 'name', name: 'Name' }, 
+                        { id: 'size', name: 'Size' }, 
+                        { id: 'time', name: 'Time' },
+                        { id: 'data', name: 'Text', hidden: true }],
+                    resizable: true,
+                    sort: true,
+                    search: false,
+                    data: clips,
+                    className: {
+                        th: 'clipmon-th',
+                        td: 'clipmon-td',
+                        table: 'clipmon-table'
+                    }
+                });
+                grid.render(e("divCliplist"));
+            }
+
+            function resizeElement(e, bottom=0) {
+                e.style.height = (window.innerHeight - e.offsetTop - 2 * e.offsetLeft - bottom) + "px";
             }
 
             function resize() {
                 resizeElement(txta);
                 resizeElement(divTextList);
-                //resizeElement(txtListEdit);
+                resizeElement(divCliplist, divCliptext.offsetHeight);
                 resizeElement(divLinks);
             }
             
@@ -87,7 +115,8 @@
         <style>
         </style>
         <div class="tab">
-            <button class="tablinks" id="defaultTab" onclick="selTab(event, 'divPrefixFile')">PrefixFile</button>
+            <button class="tablinks" id="defaultTab" onclick="selTab(event, 'divClipmon')">ClipMon</button>
+            <button class="tablinks" onclick="selTab(event, 'divPrefixFile')">PrefixFile</button>
             <button class="tablinks" onclick="selTab(event, 'divText2Link')">Text2Link</button>
             <button class="tablinks" onclick="selTab(event, 'divInfo')">Info</button>
         </div>
@@ -112,27 +141,16 @@
             <button onclick="dlgTextList.close(); reload();">Close</button>
         </dialog>
         
-        <dialog id="dlgSettings">
-            <table width="100%">
-                <colgroup>
-                    <col style="width: 120px">
-                    <col style="width: 88%">
-                </colgroup>
-                <tr>
-                    <td>Dir</td>
-                    <td><input type="search" id="txtDir" class="max" save="value" /></td>
-                </tr><tr>
-                    <td></td>
-                    <td><input type="checkbox" id="chkClipmon" save="checked" />auto paste from clipboard</td>
-                </tr>
-            </table>
-        </dialog>
-        
         <div id="divText2Link" class="tabcontent">
             <input type="button" class="btn" value="FromClipb" onclick="eel.doCmd('FromClipb')">
             <input type="button" class="btn" value="CopyAll" onclick="eel.doCmd('CopyAll')">
             <div id="divLinks" style="overflow:auto">
             </div>
+        </div>
+        
+        <div id="divClipmon" class="tabcontent" >
+            <div id="divCliplist" class="gridjs-wrapper" style="overflow-x:hidden"></div>
+            <div id="divCliptext" style="margin-top:8px">Text:<textarea id="txtCliptext" rows="8"></textarea></div>
         </div>
         
         <div id="divInfo" class="tabcontent" >
@@ -141,6 +159,7 @@
     </body>
     <script>
         document.getElementById("defaultTab").click();
+        clipmonInit(eel.getClips());
         resize();
     </script>
 </html>
