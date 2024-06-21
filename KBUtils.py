@@ -170,6 +170,7 @@ def newText(s):
     }
     clips.append(x)
     if len(clips) > maxClips: clips = clips[1:]
+    eel.clipmonUpdate(clips)
 
 
 ### Start UI ##############################################
