@@ -3,12 +3,10 @@
     <head>
         <title>KB Utils</title>
         <link rel="stylesheet" href="main.css"/>
-        <link rel="stylesheet" href="gridjs-dark.css"/>
 
         <!-- Include eel.js - note this file doesn't exist in the 'web' directory -->
         <script type="text/javascript" src="/eel.js"></script>
         <script type="text/javascript" src="utils.js"></script>
-        <script type="text/javascript" src="gridjs.production.min.js"></script>
         <script type="text/javascript">
             window.onload = function() { loadParams(true); }
             window.onbeforeunload = function() { saveParams(true); }
@@ -21,7 +19,7 @@
             }
             
             async function loadParams(first=false) {
-                x = await eel.loadParams()();
+                x = await eel.loadParams(first)();
                 setParams(x);
                 makeTextList();
                 initialized = true;
@@ -48,61 +46,36 @@
 
             eel.expose(text2Link)
             function text2Link(t) {
-                x = txtListEdit.value;
                 s = "";
-                //alert(x);
                 a = t.split("\n");
                 a.forEach(x => {
                     x = x.replace("\r", "");
                     x = x.replace("\n", "");
                     x = x.replace("\t", " ");
-                    s += "<a href='#' onclick='eel.copy(\"" + x + "\")'>" + x + "</a><br>\n";
+                    x1 = x.replace("<", "_")
+                    x1 = x1.replace(">", "_")
+                    s += "<a href='#' onclick='eel.copy(\"" + x + "\")'>" + x1 + "</a><br>\n";
                 });
                 divLinks.innerHTML = s;
             }
 
-            // grid support for clipmon -------------------
-
-            var grid;
-            var config = {
-                columns: [
-                    { id: 'name', name: 'Name' }, 
-                    { id: 'size', name: 'Size' }, 
-                    { id: 'time', name: 'Time' },
-                    { id: 'data', name: 'Text', hidden: true }],
-                resizable: true,
-                sort: true,
-                search: false,
-                className: {
-                    container: 'clipmon-container',
-                    th: 'clipmon-th',
-                    td: 'clipmon-td',
-                    table: 'clipmon-table'
-                },
-                width: '100%',
-                height: '100%',
-                data: []
-            }
-
-            eel.expose(clipmonInit)
-            function clipmonInit(data) {
-                config.data = data;
-                grid = new gridjs.Grid(config);
-                grid.render(e("divCliplist"));
-            }
+            // clipmon ------------------------------------
 
             eel.expose(clipmonUpdate)
-            function clipmonUpdate(data) {
-                config.data = data;
-                grid.updateConfig(config).forceRender();
+            function clipmonUpdate(html) {
+                e("divCliplist").innerHTML = html;
             }
 
             // misc functions -----------------------------
 
             eel.expose(setInnerHtml)
             function setInnerHtml(id, s) {
-                //alert(s);
                 e(id).innerHTML = s;
+            }
+
+            eel.expose(setValue)
+            function setValue(id, s) {
+                e(id).value = s;
             }
 
             function resizeElement(e, bottom=0) {
@@ -114,13 +87,6 @@
                 resizeElement(divTextList);
                 resizeElement(divLinks);
                 resizeElement(divCliplist, divCliptext.offsetHeight);
-                resizeElement(document.getElementsByClassName("clipmon-container")[0], divCliptext.offsetHeight);
-                return;
-                try {
-                    config.height = divCliplist.innerHeight;
-                    config.width = divCliplist.innerWidth;
-                    grid.updateConfig(config).forceRender();
-                } catch {}
             }
             
             function selTab(evt, tabName) {
@@ -170,9 +136,13 @@
         </div>
         
         <div id="divClipmon" class="tabcontent" >
-            <div id="divCliplist"></div>
+            <div id="divCliplist" style="overflow: auto;"></div>
             <div id="divCliptext" class="divText" style="margin-top:8px">
-                Text:<textarea id="txtCliptext" rows="8"></textarea>
+                Text: 
+                <span class="right">
+                    <input type="checkbox" save="checked" id="chkClipmon" onclick="saveParams()">monitor
+                </span>
+                <textarea id="txtCliptext" rows="8"></textarea>
             </div>
         </div>
         
@@ -182,7 +152,7 @@
     </body>
     <script>
         document.getElementById("defaultTab").click();
-        clipmonInit(eel.getClips());
-        setTimeout(resize, 1000);
+        eel.cmInit();
+        resize();
     </script>
 </html>

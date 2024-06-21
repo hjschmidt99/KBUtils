@@ -72,6 +72,24 @@ dialog {
     overflow: hidden;
 }
 
+.img {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.img1 {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: -2px 3px 0 3px;
+    filter: invert(1);
+}
+
+.right { float: right; }
+
 .tab {
     overflow: hidden;
     background-color: inherit;
@@ -93,21 +111,16 @@ dialog {
     display: none;
 }
 
-.clipmon-table {
+.clipmon-table,
+.clipmon-table tr,
+.clipmon-table td {
     border-collapse: collapse;
-    border-spacing: 2px 2px;
-    border: 1px solid black;
+    /* border-spacing: 2px 2px; */
+    border: 1px solid white;
+    padding: 2px 5px;
 }
 
-.clipmon-th,
-.clipmon-td {
-    border: 1px solid #bbb;
-    padding: 2px;
+#txtCliptext {
+    background-color: rgb(64, 64, 64);
+    color: white;
 }
-
-.clipmon-container {
-    width:'100%';
-    height:'100%';
-}
-
-

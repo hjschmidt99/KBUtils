@@ -50,9 +50,34 @@ def saveParams(x, closing=False):
     return xparam
 
 @eel.expose
-def loadParams():
+def loadParams(first=False):
     dump(xparam)
     return xparam
+
+@eel.expose
+def prl(s):
+    print(s)
+    eel.prl(s)
+
+@eel.expose
+def prt(s):
+    x = time.strftime("%H:%M:%S") + " " + s
+    prl(x)
+
+@eel.expose
+def copy(x):
+    clipboard.copy(x)
+
+@eel.expose
+def doCmd(cmd, p=None):
+    print(f'doCmd {cmd}')
+
+    if cmd == "FromClipb":
+        qSend.put("text2Link")
+
+    if cmd == "CopyAll":
+        sendMacro("CopyAll")
+        qSend.put("text2Link")
 
 
 ### Send key presses ######################################
@@ -84,21 +109,6 @@ def sendMacro(k):
     print(f'sendMacro {k}')
     if k in macros.keys():
         qSend.put(macros[k])
-
-@eel.expose
-def copy(x):
-    clipboard.copy(x)
-
-@eel.expose
-def doCmd(cmd, p=None):
-    print(f'doCmd {cmd}')
-
-    if cmd == "FromClipb":
-        qSend.put("text2Link")
-
-    if cmd == "CopyAll":
-        sendMacro("CopyAll")
-        qSend.put("text2Link")
 
 def doSend(a):
     dump(a)
@@ -151,10 +161,51 @@ def saveClips(clips):
         traceback.print_exc()
 
 clips = loadClips()
+lastClip = clips[len(clips) - 1]["data"]
+
+# html tag with name n, data n, attributes a
+def t(n, d, a=""):
+    return f"<{n} {a}>{d}</{n}>"
 
 @eel.expose
-def getClips():
-    return clips
+def renderClipmon():
+    h = ""
+    h = h + t("th", "Name", "")
+    h = h + t("th", "Size", "width='32px'")
+    h = h + t("th", "Time", "width='140px'")
+    h = h + t("th", " ", "width='10px'")
+    rows = ""
+    for x in clips:
+        d = ""        
+        d = d + t("td", x["name"])
+        d = d + t("td", x["size"])
+        d = d + t("td", x["time"])
+        i = '<img class="img1" title="copy" src="clipboard1.png" onclick="eel.cmCopy(\'' + x["time"] + '\')">'
+        d = d + t("td", i, "style='text-align:center'")
+        a = 'onclick="eel.cmSelect(\'' + x["time"] + '\')"'
+        rows = t("tr", d, a) + "\n" + rows
+    rows = t("tr", h) + "\n" + rows
+    html = t("table", rows, "class='max clipmon-table'")
+    return html    
+
+def cmFind(t):
+    for x in clips:
+        if x["time"] == t: return x;
+    return None
+
+@eel.expose
+def cmCopy(t):
+    x = cmFind(t)
+    if x: clipboard.copy(x["data"])
+
+@eel.expose
+def cmSelect(t):
+    x = cmFind(t)
+    eel.setValue("txtCliptext", x["data"])
+
+@eel.expose
+def cmInit():
+    eel.clipmonUpdate(renderClipmon())
 
 def newText(s):
     global clips
@@ -162,6 +213,7 @@ def newText(s):
     if len(s) > maxTextLen: return
 
     n = s if len(s) < maxNameLen else s[:maxNameLen] + "..."
+    for c in "<>\"\'": n = n.replace(c, "_")
     x = {
         "time": datetime.datetime.now().replace(microsecond=0).isoformat(sep=" "),
         "size": len(s),
@@ -170,7 +222,7 @@ def newText(s):
     }
     clips.append(x)
     if len(clips) > maxClips: clips = clips[1:]
-    eel.clipmonUpdate(clips)
+    eel.clipmonUpdate(renderClipmon())
 
 
 ### Start UI ##############################################
@@ -189,9 +241,6 @@ eel.start('main.html',
 # non-blocking eel reqires a loop 
 # we can use it for file/clipboard monitoring/polling
 
-lastClip = ""
-lastexp = None
-
 while True:
     eel.sleep(1.0)  
 
@@ -207,4 +256,3 @@ while True:
         lastexp = traceback.format_exc()
         print(lastexp)
  
-a = 1
