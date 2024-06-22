@@ -97,10 +97,11 @@ dialog {
 
 .tab button {
     color: white;
-    background-color: inherit;
+    background-color: #404040;
     float: left;
     border: none;
     padding: 4px 10px;
+    margin-right: 8px;
 }
 
 .tab button.active {
@@ -112,15 +113,30 @@ dialog {
 }
 
 .clipmon-table,
-.clipmon-table tr,
-.clipmon-table td {
+.clipmon-table tr, td {
     border-collapse: collapse;
     /* border-spacing: 2px 2px; */
     border: 1px solid white;
     padding: 2px 5px;
 }
 
+.prefix-table,
+.prefix-table tr, td {
+    border-width: 0px;
+    padding: 0px 10px 0px 0px;
+}
+
+.prefix-table button {
+    color: white;
+    background-color: black;
+    float: left;
+    border: none;
+    height: 18px;
+    margin: 0px;
+}
+
 #txtCliptext {
     background-color: rgb(64, 64, 64);
     color: white;
 }
+

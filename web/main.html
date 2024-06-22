@@ -67,20 +67,6 @@
                 e("divCliplist").innerHTML = html;
             }
 
-            eel.expose(setInnerHtml)
-            function setInnerHtml(id, s) {
-                e(id).innerHTML = s;
-            }
-
-            eel.expose(setValue)
-            function setValue(id, s) {
-                e(id).value = s;
-            }
-
-            function resizeElement(e, bottom=0) {
-                e.style.height = (window.innerHeight - e.offsetTop - 2 * e.offsetLeft - bottom) + "px";
-            }
-
             function resize() {
                 resizeElement(txta);
                 resizeElement(divTextList);
@@ -109,17 +95,21 @@
         <hr style="margin-top:0px;">
         
         <div id="divPrefixFile" class="tabcontent">
-            <input type="button" class="btn" value="Macro1" onclick="eel.sendMacro('Marco1')">
-            <input type="checkbox" save="checked" id="chkPostfix" onclick="saveParams()">Postfix
-            <image class="img right" title="options" onclick="dlgTextList.showModal()" src="settings2w.png" />
-            <br />
-            <input type="button" class="btn" value="Macro2" onclick="eel.sendMacro('Marco2')">
-            <input type="checkbox" save="checked" id="chkDash" onclick="saveParams()">Dash
-            <br />
-            <input type="button" class="btn" value="Clipboard" onclick="eel.sendText('clipboard')">
-            <input type="checkbox" save="checked" id="chkPotpl" onclick="saveParams()">PotPlayer
-            <hr>
-            <div id="divTextList" style="overflow:auto">
+            <table class="prefix-table"><tr>
+                    <td><button class="btn" onclick="eel.sendMacro('Marco1')">Macro1</button></td>
+                    <td><input type="checkbox" save="checked" id="chkPostfix" onclick="saveParams()">Postfix</td>
+                    <td><input type="checkbox" save="checked" id="chkPotpl" onclick="saveParams()">PotPlayer</td>
+                    <image class="img right" title="options" onclick="dlgTextList.showModal()" src="settings2w.png" />
+                </tr><tr>
+                    <td><button class="btn" nclick="eel.sendMacro('Marco2')">Macro2</button></td>
+                    <td><input type="checkbox" save="checked" id="chkDash" onclick="saveParams()">Dash</td>
+                    <td></td>
+                </tr><tr>
+                    <td><button class="btn" onclick="eel.sendText('clipboard')">Clipboard</button></td>
+                    <td><input type="checkbox" save="checked" id="chkDown" onclick="saveParams()">CR down</td>
+                    <td></td>
+                </tr></table>
+            <div id="divTextList" style="overflow:auto;margin-top:8px">
             </div>
         </div>
         <dialog id="dlgTextList">

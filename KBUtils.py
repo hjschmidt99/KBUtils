@@ -25,6 +25,7 @@ xparam = {
     "chkDash": False,
     "chkPotpl": False,
     "chkClipmon": False,
+    "chkDown": False,
     "txtListEdit": "prefix1\n#prefix2\nprefix3",
 }
 
@@ -102,6 +103,8 @@ def sendText(x):
         a = a + ["right", f"${dash}{x}"]
     else: 
         a = a + ["home", f"${x}{dash}"]
+    if xparam["chkDown"]: 
+        a = a + ["enter", 500, "down"]
     qSend.put(a)
 
 @eel.expose

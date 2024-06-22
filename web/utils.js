@@ -162,6 +162,20 @@ function e(id) {
     return document.getElementById(id);
 }
 
+function resizeElement(e, bottom=0) {
+    e.style.height = (window.innerHeight - e.offsetTop - 2 * e.offsetLeft - bottom) + "px";
+}
+
+eel.expose(setInnerHtml)
+function setInnerHtml(id, s) {
+    e(id).innerHTML = s;
+}
+
+eel.expose(setValue)
+function setValue(id, s) {
+    e(id).value = s;
+}
+
 function escapeHtml(s)
 {
     return s
