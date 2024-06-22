@@ -113,7 +113,8 @@ dialog {
 }
 
 .clipmon-table,
-.clipmon-table tr, td {
+.clipmon-table tr, 
+.clipmon-table td {
     border-collapse: collapse;
     /* border-spacing: 2px 2px; */
     border: 1px solid white;
@@ -121,7 +122,8 @@ dialog {
 }
 
 .prefix-table,
-.prefix-table tr, td {
+.prefix-table tr,
+.prefix-table td {
     border-width: 0px;
     padding: 0px 10px 0px 0px;
 }
