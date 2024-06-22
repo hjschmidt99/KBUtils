@@ -209,7 +209,7 @@ def cmInit():
 
 def newText(s):
     global clips
-    print(s)
+    #print(s)
     if len(s) > maxTextLen: return
 
     n = s if len(s) < maxNameLen else s[:maxNameLen] + "..."

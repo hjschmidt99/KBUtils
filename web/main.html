@@ -19,24 +19,21 @@
             }
             
             async function loadParams(first=false) {
-                x = await eel.loadParams(first)();
+                var x = await eel.loadParams(first)();
                 setParams(x);
                 makeTextList();
                 initialized = true;
             }
             
             async function reload() {
-                x = await saveParams();
+                var x = await saveParams();
                 x = await loadParams();
             }
 
-            // textlist functions -------------------------
-
             function makeTextList() {
-                x = txtListEdit.value;
-                s = "";
-                //alert(x);
-                a = x.split("\n");
+                var x = txtListEdit.value;
+                var s = "";
+                var a = x.split("\n");
                 a.forEach(e => {
                     if (!e.startsWith("#"))
                         s += "<a href='#' onclick='eel.sendText(this.innerHTML)'>" + e + "</a><br>\n";
@@ -44,29 +41,31 @@
                 divTextList.innerHTML = s;
             }
 
+            function doCopy(event) {
+                var x = event.currentTarget
+                x.style.color = "yellow";
+                eel.copy(unescapeHtml(x.innerHTML));
+            } 
+
             eel.expose(text2Link)
             function text2Link(t) {
-                s = "";
+                var s = "";
+                var lastx = "";
+                t = t.replace("\r", "").replace("\t", " ");
                 a = t.split("\n");
                 a.forEach(x => {
-                    x = x.replace("\r", "");
-                    x = x.replace("\n", "");
-                    x = x.replace("\t", " ");
-                    x1 = x.replace("<", "_")
-                    x1 = x1.replace(">", "_")
-                    s += "<a href='#' onclick='eel.copy(\"" + x + "\")'>" + x1 + "</a><br>\n";
+                    var x1 = escapeHtml(x);
+                    if (x1 != lastx)
+                        s += "<a href='#' onclick='doCopy(event)'>" + x1 + "</a><br>\n";
+                    lastx = x1;
                 });
                 divLinks.innerHTML = s;
             }
-
-            // clipmon ------------------------------------
 
             eel.expose(clipmonUpdate)
             function clipmonUpdate(html) {
                 e("divCliplist").innerHTML = html;
             }
-
-            // misc functions -----------------------------
 
             eel.expose(setInnerHtml)
             function setInnerHtml(id, s) {
@@ -131,7 +130,7 @@
         <div id="divText2Link" class="tabcontent">
             <input type="button" class="btn" value="FromClipb" onclick="eel.doCmd('FromClipb')">
             <input type="button" class="btn" value="CopyAll" onclick="eel.doCmd('CopyAll')">
-            <div id="divLinks" style="overflow:auto">
+            <div id="divLinks" style="overflow:auto;margin-top:5px">
             </div>
         </div>
         
