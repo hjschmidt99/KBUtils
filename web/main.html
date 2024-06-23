@@ -66,9 +66,66 @@
             function clipmonUpdate(html) {
                 e("divCliplist").innerHTML = html;
             }
+            
+
+            var actButton;
+            var keyDefs = {};
+            var buttontpl = '<button id="btnKey{n}" class="btnk" onclick="doKey(event)"></button>\n'
+
+            async function keysInit() {
+                s = "";
+                for (let i = 1; i < 25; i++)
+                    s += buttontpl.replaceAll("{n}", i.toString());
+                divKeys.innerHTML = s;
+
+                keyDefs = await eel.loadKeys()();
+                for (const [x, k] of Object.entries(keyDefs)) {
+                    try {
+                        e(x).innerHTML = k.name;
+                    } catch {}
+                }
+            }
+
+            function doKey(evt) {
+                k = null;
+                actButton = evt.currentTarget;
+                if (actButton.id in keyDefs) {
+                    k = keyDefs[actButton.id];
+                }
+                if (chkEditkey.checked) {
+                    chkEditkey.checked = false;
+                    if (k != null) {
+                        txtKeyname.value = k.name;
+                        selKeymode.value = k.mode;
+                        txtKeyparam.value = k.param;
+                    }
+                    dlgKeydef.showModal();
+                    return;
+                }
+
+                if (k != null) eel.doKey(k.name, k.mode, k.param);
+            } 
+
+            function keyEditClose(save) {
+                if (save) {
+                    k = {
+                        id: actButton.id,
+                        name: txtKeyname.value,
+                        mode: selKeymode.value,
+                        param: txtKeyparam.value
+                    };
+                    //console.log(k.id);
+                    keyDefs[k.id] = k;
+                    actButton.innerHTML = k.name;
+                    eel.saveKeys(keyDefs);
+                    console.log(keyDefs);
+                }
+                dlgKeydef.close();
+            } 
+
 
             function resize() {
-                resizeElement(txta);
+                //resizeElement(txta);
                 resizeElement(divTextList);
                 resizeElement(divLinks);
                 resizeElement(divCliplist, divCliptext.offsetHeight);
@@ -87,12 +144,44 @@
         <style>
         </style>
         <div class="tab">
+            <img class="img right" title="copy" src="info.png" onclick="dlgInfo.showModal()">
             <button class="tablinks" id="defaultTab" onclick="selTab(event, 'divClipmon')">ClipMon</button>
             <button class="tablinks" onclick="selTab(event, 'divPrefixFile')">PrefixFile</button>
             <button class="tablinks" onclick="selTab(event, 'divText2Link')">Text2Link</button>
-            <button class="tablinks" onclick="selTab(event, 'divInfo')">Info</button>
+            <button class="tablinks" onclick="selTab(event, 'divKeydef')">Keys</button>
         </div>
         <hr style="margin-top:0px;">
+        
+        <div id="divKeydef" class="tabcontent" >
+            <input type="checkbox" id="chkEditkey">edit next key
+            <br><div id ="divKeys">
+                <button id="btnKey1" class="btn" onclick="doKey(event)"></button>
+            </div>
+        </div>
+        <dialog id="dlgKeydef" >
+            <h1>Key Definition</h1>
+            <table width="100%">
+                <tr>
+                    <td>Name:</td>
+                    <td><input type="search" id="txtKeyname" class="max"></td>
+                </tr>
+                <tr>
+                    <td>Cmd:</td>
+                    <td><select id="selKeymode">
+                        <option value="keymacro">keymacro</option>
+                        <option value="editclip">editclip</option>
+                        <option value="external">external</option>
+                        <option value="internal">internal</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>Param:</td>
+                    <td><input type="search" id="txtKeyparam" class="max"></td>
+                </tr>
+            </table><br>
+            <button onclick="keyEditClose(true)">Save</button>
+            <button onclick="keyEditClose(false)">Cancel</button>
+        </dialog>
         
         <div id="divPrefixFile" class="tabcontent">
             <table class="prefix-table"><tr>
@@ -101,7 +190,7 @@
                     <td><input type="checkbox" save="checked" id="chkPotpl" onclick="saveParams()">PotPlayer</td>
                     <image class="img right" title="options" onclick="dlgTextList.showModal()" src="settings2w.png" />
                 </tr><tr>
-                    <td><button class="btn" nclick="eel.sendMacro('Marco2')">Macro2</button></td>
+                    <td><button class="btn" onclick="eel.sendMacro('Marco2')">Macro2</button></td>
                     <td><input type="checkbox" save="checked" id="chkDash" onclick="saveParams()">Dash</td>
                     <td></td>
                 </tr><tr>
@@ -135,13 +224,15 @@
             </div>
         </div>
         
-        <div id="divInfo" class="tabcontent" >
-            <div class="divText">Info:<br/><textarea id="txta"></textarea></div>
-        </div>
+        <dialog id="dlgInfo" >
+            Info:<br/><textarea id="txta" rows="12" style="width:300px"></textarea><br><br>
+            <button onclick="dlgInfo.close();">Close</button>
+        </dialog>
     </body>
     <script>
         document.getElementById("defaultTab").click();
         eel.cmInit();
+        keysInit();
         resize();
     </script>
 </html>

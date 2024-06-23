@@ -11,6 +11,7 @@ import clipboard
 import keyboard
 import queue
 import threading
+import base64
 
 eel.init('web')
 
@@ -43,7 +44,8 @@ def dump(o):
 
 @eel.expose
 def saveParams(x, closing=False):
-    if closing: saveClips(clips)
+    if closing: 
+        saveClips(clips)
     for k in x.keys():
         xparam[k] = x[k]
     with open(fncfg, 'w') as f1:
@@ -81,7 +83,7 @@ def doCmd(cmd, p=None):
         qSend.put("text2Link")
 
 
-### Send key presses ######################################
+### Send keypresses #######################################
 
 macros = { 
     "Marco1": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del"],
@@ -113,6 +115,9 @@ def sendMacro(k):
     if k in macros.keys():
         qSend.put(macros[k])
 
+def sendArray(a):
+    qSend.put(a)
+
 def doSend(a):
     dump(a)
     for x in a:
@@ -137,6 +142,54 @@ def worker():
 
 th1 = threading.Thread(target=worker, daemon=True)
 th1.start()
+
+
+### Key definitions #######################################
+
+fnkeys = fn + ".keys.json"
+
+@eel.expose
+def loadKeys():
+    try:
+        if os.path.exists(fnkeys):
+            with open(fnkeys, 'r') as f1:
+                return json.load(f1)
+    except:
+        traceback.print_exc()
+    return {}
+
+@eel.expose
+def saveKeys(keys):
+    dump(keys)
+    try:
+        with open(fnkeys, 'w') as f1:
+            json.dump(keys, f1, indent=2)
+    except:
+        traceback.print_exc()
+
+def editClip(p, s):
+    if p == "lower": s = s.lower()
+    if p == "upper": s = s.upper()
+    if p == "capitalize": s = s.capitalize()
+    if p == "b64decode": s = base64.b64decode(s.encode("ascii")).decode("ascii")
+    if p == "b64encode": s = base64.b64encode(s.encode("ascii")).decode("ascii")
+    return s
+
+@eel.expose
+def doKey(name, mode, param):
+    try:
+        print(f"doKey {name}, {mode}, {param}")
+
+        if mode == "editclip":
+            s = clipboard.paste()
+            s = editClip(param.lower(), s)
+            clipboard.copy(s)
+
+        if mode == "keymacro":
+            sendArray(json.loads(param))
+
+    except:
+        traceback.print_exc()
 
 
 ### Clipboard monitor #####################################

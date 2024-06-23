@@ -1,0 +1,44 @@
+{
+  "btnKey1": {
+    "id": "btnKey1",
+    "name": "lower",
+    "mode": "editclip",
+    "param": "lower"
+  },
+  "btnKey2": {
+    "id": "btnKey2",
+    "name": "upper",
+    "mode": "editclip",
+    "param": "upper"
+  },
+  "btnKey3": {
+    "id": "btnKey3",
+    "name": "capitalize",
+    "mode": "editclip",
+    "param": "capitalize"
+  },
+  "btnKey4": {
+    "id": "btnKey4",
+    "name": "b64encode",
+    "mode": "editclip",
+    "param": "b64encode"
+  },
+  "btnKey5": {
+    "id": "btnKey5",
+    "name": "b64decode",
+    "mode": "editclip",
+    "param": "b64decode"
+  },
+  "btnKey7": {
+    "id": "btnKey7",
+    "name": "browser m3u",
+    "mode": "keymacro",
+    "param": "[\"alt+tab\", 500, \"f12\", 500, \"tab, tab\", 100, \"$m3u\"]"
+  },
+  "btnKey8": {
+    "id": "btnKey8",
+    "name": "browser mpd",
+    "mode": "keymacro",
+    "param": "[\"alt+tab\", 500, \"f12\", 500, \"tab, tab\", 100, \"$mpd\"]"
+  }
+}
