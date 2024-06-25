@@ -12,6 +12,7 @@ import keyboard
 import queue
 import threading
 import base64
+import win32clipboard as wcb
 
 eel.init('web')
 
@@ -167,12 +168,48 @@ def saveKeys(keys):
     except:
         traceback.print_exc()
 
+
+cbfmts = {val: x for x, val in vars(wcb).items() if x.startswith('CF_')}
+showCbFmts = True
+
+def cbFmtName(fmt):
+    if fmt in cbfmts:
+        return cbfmts[fmt]
+    try:
+        return wcb.GetClipboardFormatName(fmt)
+    except:
+        return "unknown"
+
 def editClip(p, s):
     if p == "lower": s = s.lower()
     if p == "upper": s = s.upper()
     if p == "capitalize": s = s.capitalize()
     if p == "b64decode": s = base64.b64decode(s.encode("ascii")).decode("ascii")
     if p == "b64encode": s = base64.b64encode(s.encode("ascii")).decode("ascii")
+    if p == "totext":
+        # use win32clipboard here to support clipboard formats
+        wcb.OpenClipboard()
+        if showCbFmts:
+            cbfmts = {val: x for x, val in vars(wcb).items() if x.startswith('CF_')}
+            fmt = 0
+            p = ""
+            while True:
+                fmt = wcb.EnumClipboardFormats(fmt)
+                if fmt == 0: break
+                p = p + '{:5} ({})\n'.format(fmt, cbFmtName(fmt))
+            prl(f"Current clipboard formats:\n{p}\n")
+
+        # file(s) to string
+        if wcb.IsClipboardFormatAvailable(wcb.CF_HDROP):
+            s = str(wcb.GetClipboardData(wcb.CF_HDROP))
+            s = s.replace("('", "").replace("',)", "").replace("')", "").replace("\\\\", "\\").replace("', '", "\n")
+
+        # HTML format ????
+        CF_HTML = 49322
+        if wcb.IsClipboardFormatAvailable(CF_HTML):
+            s = str(wcb.GetClipboardData(CF_HTML))
+
+        wcb.CloseClipboard()
     return s
 
 @eel.expose
