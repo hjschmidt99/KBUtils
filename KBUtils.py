@@ -179,6 +179,16 @@ def cbFmtName(fmt):
         return wcb.GetClipboardFormatName(fmt)
     except:
         return "unknown"
+    
+def cbShowfmts();
+    cbfmts = {val: x for x, val in vars(wcb).items() if x.startswith('CF_')}
+    fmt = 0
+    p = ""
+    while True:
+        fmt = wcb.EnumClipboardFormats(fmt)
+        if fmt == 0: break
+        p = p + '{:5} ({})\n'.format(fmt, cbFmtName(fmt))
+    return p
 
 def editClip(p, s):
     if p == "lower": s = s.lower()
@@ -190,14 +200,7 @@ def editClip(p, s):
         # use win32clipboard here to support clipboard formats
         wcb.OpenClipboard()
         if showCbFmts:
-            cbfmts = {val: x for x, val in vars(wcb).items() if x.startswith('CF_')}
-            fmt = 0
-            p = ""
-            while True:
-                fmt = wcb.EnumClipboardFormats(fmt)
-                if fmt == 0: break
-                p = p + '{:5} ({})\n'.format(fmt, cbFmtName(fmt))
-            prl(f"Current clipboard formats:\n{p}\n")
+            prl(f"Current clipboard formats:\n{cbShowfmts()}\n")
 
         # file(s) to string
         if wcb.IsClipboardFormatAvailable(wcb.CF_HDROP):
