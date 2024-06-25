@@ -181,7 +181,6 @@ def cbFmtName(fmt):
         return "unknown"
     
 def cbShowfmts();
-    cbfmts = {val: x for x, val in vars(wcb).items() if x.startswith('CF_')}
     fmt = 0
     p = ""
     while True:
