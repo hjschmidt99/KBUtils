@@ -180,7 +180,7 @@ def cbFmtName(fmt):
     except:
         return "unknown"
     
-def cbShowfmts();
+def cbShowfmts():
     fmt = 0
     p = ""
     while True:
