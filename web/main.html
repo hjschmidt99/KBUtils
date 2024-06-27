@@ -8,9 +8,9 @@
         <script type="text/javascript" src="/eel.js"></script>
         <script type="text/javascript" src="utils.js"></script>
         <script type="text/javascript">
+            var initialized = false;
             window.onload = function() { loadParams(true); }
             window.onbeforeunload = function() { saveParams(true); }
-            var initialized = false;
 
             async function saveParams(closing=false) {
                 if (!initialized) return;
@@ -30,6 +30,23 @@
                 x = await loadParams();
             }
 
+            function resize() {
+                //resizeElement(txta);
+                resizeElement(divTextList);
+                resizeElement(divLinks);
+                resizeElement(divCliplist, divCliptext.offsetHeight);
+            }
+            
+            function selTab(evt, tabName) {
+                selectTab(evt, tabName);
+                resize();
+                saveParams();
+                makeTextList();
+            } 
+
+
+            // prefix file -------------------------------
+
             function makeTextList() {
                 var x = txtListEdit.value;
                 var s = "";
@@ -40,6 +57,9 @@
                 });
                 divTextList.innerHTML = s;
             }
+
+
+            // text2link ----------------------------------
 
             function doCopy(event) {
                 var x = event.currentTarget
@@ -62,15 +82,22 @@
                 divLinks.innerHTML = s;
             }
 
+
+            // clipmon ------------------------------------
+
             eel.expose(clipmonUpdate)
             function clipmonUpdate(html) {
                 e("divCliplist").innerHTML = html;
             }
             
 
+            // keys ---------------------------------------
+
             var actButton;
             var keyDefs = {};
+            var keyOptions = {};
             var buttontpl = '<button id="btnKey{n}" class="btnk" onclick="doKey(event)"></button>\n'
+            var optiontpl = '<option value="{n}">{n}</option>\n'
 
             async function keysInit() {
                 s = "";
@@ -84,6 +111,12 @@
                         e(x).innerHTML = k.name;
                     } catch {}
                 }
+
+                keyOptions = await eel.loadKeyOptions()();
+                s = "";
+                for (const x in keyOptions) 
+                    s += optiontpl.replaceAll("{n}", x);
+                selKeymode.innerHTML = s;
             }
 
             function doKey(evt) {
@@ -123,20 +156,23 @@
                 dlgKeydef.close();
             } 
 
+            function optChg(evt) {
+                e = evt.currentTarget;
 
-            function resize() {
-                //resizeElement(txta);
-                resizeElement(divTextList);
-                resizeElement(divLinks);
-                resizeElement(divCliplist, divCliptext.offsetHeight);
+                if (e.id == "selKeymode") {
+                    s = ""
+                    if (e.value)
+                        for (const x of keyOptions[e.value]) 
+                            s += optiontpl.replaceAll("{n}", x);
+                    selKeyOpt.innerHTML = s;
+                }
+
+                if (e.id == "selKeyOpt") {
+                    txtKeyparam.value = e.value;
+                    if (!txtKeyname.value) txtKeyname.value = e.value;
+                }
             }
-            
-            function selTab(evt, tabName) {
-                selectTab(evt, tabName);
-                resize();
-                saveParams();
-                makeTextList();
-            } 
+
         </script>
     </head>
 
@@ -167,12 +203,8 @@
                 </tr>
                 <tr>
                     <td>Cmd:</td>
-                    <td><select id="selKeymode">
-                        <option value="keymacro">keymacro</option>
-                        <option value="editclip">editclip</option>
-                        <option value="external">external</option>
-                        <option value="internal">internal</option>
-                    </select></td>
+                    <td><select id="selKeymode" onChange="optChg(event)"></select>&nbsp;&nbsp;&nbsp;
+                    <select id="selKeyOpt" onChange="optChg(event)"></select></td>
                 </tr>
                 <tr>
                     <td>Param:</td>

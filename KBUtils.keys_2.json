@@ -13,9 +13,9 @@
   },
   "btnKey3": {
     "id": "btnKey3",
-    "name": "capitalize",
+    "name": "capwords",
     "mode": "editclip",
-    "param": "capitalize"
+    "param": "capwords"
   },
   "btnKey4": {
     "id": "btnKey4",
@@ -33,12 +33,48 @@
     "id": "btnKey7",
     "name": "browser m3u",
     "mode": "keymacro",
-    "param": "[\"alt+tab\", 500, \"f12\", 500, \"tab, tab\", 100, \"$m3u\"]"
+    "param": "[\"alt+tab\", 500, \"ctrl+shift+e\", 500, \"tab, tab\", 200, \"$m3u\"]"
   },
   "btnKey8": {
     "id": "btnKey8",
     "name": "browser mpd",
     "mode": "keymacro",
-    "param": "[\"alt+tab\", 500, \"f12\", 500, \"tab, tab\", 100, \"$mpd\"]"
+    "param": "[\"alt+tab\", 500, \"ctrl+shift+e\", 500, \"tab, tab\", 200, \"$mpd\"]"
+  },
+  "btnKey6": {
+    "id": "btnKey6",
+    "name": "to text",
+    "mode": "editclip",
+    "param": "totext"
+  },
+  "btnKey9": {
+    "id": "btnKey9",
+    "name": "browser index",
+    "mode": "keymacro",
+    "param": "[\"alt+tab\", 500, \"ctrl+shift+e\", 800, \"tab, tab\", 800, \"$index\"]"
+  },
+  "btnKey13": {
+    "id": "btnKey13",
+    "name": "bufClear",
+    "mode": "internal",
+    "param": "bufClear"
+  },
+  "btnKey14": {
+    "id": "btnKey14",
+    "name": "bufAppend",
+    "mode": "internal",
+    "param": "bufAppend"
+  },
+  "btnKey15": {
+    "id": "btnKey15",
+    "name": "bufAppend Line",
+    "mode": "internal",
+    "param": "bufAppendLine"
+  },
+  "btnKey16": {
+    "id": "btnKey16",
+    "name": "bufCopy",
+    "mode": "internal",
+    "param": "bufCopy"
   }
 }

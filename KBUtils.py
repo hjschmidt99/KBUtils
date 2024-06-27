@@ -139,7 +139,7 @@ def worker():
                 if a == "text2Link": eel.text2Link(clipboard.paste())
         except:
             traceback.print_exc()
-        time.sleep(1)
+        eel.sleep(1)
 
 th1 = threading.Thread(target=worker, daemon=True)
 th1.start()
@@ -172,6 +172,17 @@ def saveKeys(keys):
 cbfmts = {val: x for x, val in vars(wcb).items() if x.startswith('CF_')}
 showCbFmts = True
 
+keyOptions = {
+    "keymacro": [],
+    "editclip": ["", "lower", "upper", "capwords", "b64decode", "b64encode", "totext"],
+    "internal": ["", "bufClear", "bufAppend", "bufAppendLine", "bufCopy"],
+    "external": [],
+}
+
+@eel.expose
+def loadKeyOptions():
+    return keyOptions
+
 def cbFmtName(fmt):
     if fmt in cbfmts:
         return cbfmts[fmt]
@@ -192,7 +203,7 @@ def cbShowfmts():
 def editClip(p, s):
     if p == "lower": s = s.lower()
     if p == "upper": s = s.upper()
-    if p == "capitalize": s = s.capitalize()
+    if p == "capwords": s = " ".join(w.capitalize() for w in s.split())
     if p == "b64decode": s = base64.b64decode(s.encode("ascii")).decode("ascii")
     if p == "b64encode": s = base64.b64encode(s.encode("ascii")).decode("ascii")
     if p == "totext":
@@ -214,6 +225,15 @@ def editClip(p, s):
         wcb.CloseClipboard()
     return s
 
+internalBuf = ""
+
+def doBuf(p):
+    global internalBuf
+    if p == "bufClear": internalBuf = ""
+    if p == "bufAppend": internalBuf = internalBuf + " " + clipboard.paste()
+    if p == "bufAppendLine": internalBuf = internalBuf + clipboard.paste() + "\n"
+    if p == "bufCopy": clipboard.copy(internalBuf)
+
 @eel.expose
 def doKey(name, mode, param):
     try:
@@ -226,6 +246,9 @@ def doKey(name, mode, param):
 
         if mode == "keymacro":
             sendArray(json.loads(param))
+
+        if mode == "internal":
+            if param.startswith("buf"): doBuf(param)
 
     except:
         traceback.print_exc()
@@ -322,6 +345,10 @@ def newText(s):
 
 ### Start UI ##############################################
 
+def close_callback(route, websockets):
+    if not websockets:
+        exit()
+
 #cmdline_args = []    
 cmdline_args = ["–disable-translate", "–incognito", 
     f"--window-position={xparam['x']},{xparam['y']}", 
@@ -331,6 +358,7 @@ eel.start('main.html',
     port=xparam["port"], 
     position=(xparam["x"], xparam["y"]), 
     size=(xparam["w"], xparam["h"]),
+    close_callback=close_callback,
     block=False)
 
 # non-blocking eel reqires a loop 
