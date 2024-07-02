@@ -13,6 +13,7 @@ import queue
 import threading
 import base64
 import win32clipboard as wcb
+import wcbx
 
 eel.init('web')
 
@@ -168,10 +169,6 @@ def saveKeys(keys):
     except:
         traceback.print_exc()
 
-
-cbfmts = {val: x for x, val in vars(wcb).items() if x.startswith('CF_')}
-showCbFmts = True
-
 keyOptions = {
     "keymacro": [],
     "editclip": ["", "lower", "upper", "capwords", "b64decode", "b64encode", "totext"],
@@ -183,22 +180,7 @@ keyOptions = {
 def loadKeyOptions():
     return keyOptions
 
-def cbFmtName(fmt):
-    if fmt in cbfmts:
-        return cbfmts[fmt]
-    try:
-        return wcb.GetClipboardFormatName(fmt)
-    except:
-        return "unknown"
-    
-def cbShowfmts():
-    fmt = 0
-    p = ""
-    while True:
-        fmt = wcb.EnumClipboardFormats(fmt)
-        if fmt == 0: break
-        p = p + '{:5} ({})\n'.format(fmt, cbFmtName(fmt))
-    return p
+showCbFmts = True
 
 def editClip(p, s):
     if p == "lower": s = s.lower()
@@ -206,23 +188,8 @@ def editClip(p, s):
     if p == "capwords": s = " ".join(w.capitalize() for w in s.split())
     if p == "b64decode": s = base64.b64decode(s.encode("ascii")).decode("ascii")
     if p == "b64encode": s = base64.b64encode(s.encode("ascii")).decode("ascii")
-    if p == "totext":
-        # use win32clipboard here to support clipboard formats
-        wcb.OpenClipboard()
-        if showCbFmts:
-            prl(f"Current clipboard formats:\n{cbShowfmts()}\n")
-
-        # file(s) to string
-        if wcb.IsClipboardFormatAvailable(wcb.CF_HDROP):
-            s = str(wcb.GetClipboardData(wcb.CF_HDROP))
-            s = s.replace("('", "").replace("',)", "").replace("')", "").replace("\\\\", "\\").replace("', '", "\n")
-
-        # HTML format ????
-        CF_HTML = 49322
-        if wcb.IsClipboardFormatAvailable(CF_HTML):
-            s = str(wcb.GetClipboardData(CF_HTML))
-
-        wcb.CloseClipboard()
+    if p == "totext": s = wcbx.cbText(showCbFmts)
+    prl(f"New clipboard text:\n{s}")
     return s
 
 internalBuf = ""
@@ -281,7 +248,7 @@ def saveClips(clips):
 clips = loadClips()
 lastClip = clips[len(clips) - 1]["data"]
 
-# html tag with name n, data n, attributes a
+# html tag with name n, data d, attributes a
 def t(n, d, a=""):
     return f"<{n} {a}>{d}</{n}>"
 
@@ -291,7 +258,8 @@ def renderClipmon():
     h = h + t("th", "Name", "")
     h = h + t("th", "Size", "width='32px'")
     h = h + t("th", "Time", "width='140px'")
-    h = h + t("th", " ", "width='10px'")
+    i = '<img class="img1" title="merge all" src="clipboard1.png" onclick="eel.cmCopy(\'\')">'
+    h = h + t("th", i, "width='10px' style='text-align:center'")
     rows = ""
     for x in clips:
         d = ""        
@@ -311,10 +279,17 @@ def cmFind(t):
         if x["time"] == t: return x;
     return None
 
+def cmMerge():
+    s = "\n".join([x["data"] for x in clips])
+    return s
+
 @eel.expose
 def cmCopy(t):
-    x = cmFind(t)
-    if x: clipboard.copy(x["data"])
+    if t:
+        x = cmFind(t)
+        if x: clipboard.copy(x["data"])
+    else:
+        clipboard.copy(cmMerge())
 
 @eel.expose
 def cmSelect(t):
@@ -370,7 +345,8 @@ while True:
     try: 
         # check clipboard for changes
         if xparam["chkClipmon"]:
-            clip = clipboard.paste()
+            #clip = clipboard.paste()
+            clip = wcbx.cbText()
             if clip and clip != lastClip:
                 newText(clip)
                 lastClip = clip
