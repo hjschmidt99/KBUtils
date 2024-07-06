@@ -14,6 +14,7 @@ import threading
 import base64
 import win32clipboard as wcb
 import wcbx
+import urllib.parse
 
 eel.init('web')
 
@@ -165,13 +166,14 @@ def saveKeys(keys):
     dump(keys)
     try:
         with open(fnkeys, 'w') as f1:
-            json.dump(keys, f1, indent=2)
+            json.dump(keys, f1, indent=4)
     except:
         traceback.print_exc()
 
 keyOptions = {
     "keymacro": [],
-    "editclip": ["", "lower", "upper", "capwords", "b64decode", "b64encode", "totext"],
+    "editclip": ["", "strip", "lower", "upper", "capwords", "urlencode", "urldecode", 
+                 "b64decode", "b64encode", "totext", "time2epoch", "epoch2time"],
     "internal": ["", "bufClear", "bufAppend", "bufAppendLine", "bufCopy"],
     "external": [],
 }
@@ -181,14 +183,20 @@ def loadKeyOptions():
     return keyOptions
 
 showCbFmts = True
+tFormatUi = "%d.%m.%Y %H:%M:%S"
 
 def editClip(p, s):
+    if p == "strip": s = s.strip()
     if p == "lower": s = s.lower()
     if p == "upper": s = s.upper()
     if p == "capwords": s = " ".join(w.capitalize() for w in s.split())
+    if p == "urlencode": s = urllib.parse.quote(s)
+    if p == "urldecode": s = urllib.parse.unquote(s)
     if p == "b64decode": s = base64.b64decode(s.encode("ascii")).decode("ascii")
     if p == "b64encode": s = base64.b64encode(s.encode("ascii")).decode("ascii")
     if p == "totext": s = wcbx.cbText(showCbFmts)
+    if p == "time2epoch": s = int(time.mktime(time.strptime(s, tFormatUi)))
+    if p == "epoch2time": s = time.strftime(tFormatUi, time.localtime(int(s)))
     prl(f"New clipboard text:\n{s}")
     return s
 

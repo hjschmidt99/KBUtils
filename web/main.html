@@ -101,7 +101,7 @@
 
             async function keysInit() {
                 s = "";
-                for (let i = 1; i < 25; i++)
+                for (let i = 1; i < 37; i++)
                     s += buttontpl.replaceAll("{n}", i.toString());
                 divKeys.innerHTML = s;
 
@@ -142,13 +142,12 @@
             function keyEditClose(save) {
                 if (save) {
                     k = {
-                        id: actButton.id,
                         name: txtKeyname.value,
                         mode: selKeymode.value,
                         param: txtKeyparam.value
                     };
-                    //console.log(k.id);
-                    keyDefs[k.id] = k;
+                    //console.log(actButton.id);
+                    keyDefs[actButton.id] = k;
                     actButton.innerHTML = k.name;
                     eel.saveKeys(keyDefs);
                     console.log(keyDefs);
