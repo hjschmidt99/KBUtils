@@ -15,6 +15,7 @@ import base64
 import win32clipboard as wcb
 import wcbx
 import urllib.parse
+import fileWatch
 
 eel.init('web')
 
@@ -236,6 +237,7 @@ maxTextLen = 2000
 maxNameLen = 30
 maxClips = 200
 fnclips = fn + ".clips.json"
+clipsWatch = fileWatch.AutoSave(fnclips, 300)
 
 def loadClips():
     try:
@@ -324,12 +326,14 @@ def newText(s):
     clips.append(x)
     if len(clips) > maxClips: clips = clips[1:]
     eel.clipmonUpdate(renderClipmon())
+    if clipsWatch.saveNeeded(): saveClips(clips)
 
 
 ### Start UI ##############################################
 
 def close_callback(route, websockets):
     if not websockets:
+        saveClips(clips)
         exit()
 
 #cmdline_args = []    
