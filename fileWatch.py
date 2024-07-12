@@ -6,6 +6,8 @@ import time
 import datetime
 import traceback
 
+debug = False
+
 class AutoSave:
     def __init__(self, name, interval=600):
         self.name = name
@@ -16,7 +18,7 @@ class AutoSave:
         t0 = time.time()
         if int(t0) < self.nextSave: return False
         self.nextSave = int(t0) + self.td
-        print(f"{datetime.datetime.now()} AutoSave: save needed for {self.name}")
+        if debug: print(f"{datetime.datetime.now()} AutoSave: save needed for {self.name}")
         return True
     
     

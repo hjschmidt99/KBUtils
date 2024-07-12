@@ -151,25 +151,48 @@ th1.start()
 ### Key definitions #######################################
 
 fnkeys = fn + ".keys.json"
+keys = {}
 
 @eel.expose
 def loadKeys():
+    global keys
     try:
         if os.path.exists(fnkeys):
             with open(fnkeys, 'r') as f1:
-                return json.load(f1)
+                keys = json.load(f1)
     except:
         traceback.print_exc()
-    return {}
+    regHotkeys(keys)
+    return keys
 
 @eel.expose
-def saveKeys(keys):
-    dump(keys)
+def saveKeys(keysNew):
+    global keys
+    dump(keysNew)
     try:
         with open(fnkeys, 'w') as f1:
-            json.dump(keys, f1, indent=4)
+            json.dump(keysNew, f1, indent=4)
     except:
         traceback.print_exc()
+    unregHotkeys(keys)
+    keys = keysNew
+    regHotkeys(keys)
+
+def regHotkeys(keys):
+    for x in keys.values():
+        try:
+            if "hotkey" in x:
+                keyboard.add_hotkey(x["hotkey"], doKey, [x["name"], x["mode"], x["param"]])
+        except:
+            traceback.print_exc()
+
+def unregHotkeys(keys):
+    for x in keys.values():
+        try:
+            if "hotkey" in x:
+                keyboard.remove_hotkey(x["hotkey"])
+        except:
+            traceback.print_exc()
 
 keyOptions = {
     "keymacro": [],

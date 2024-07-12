@@ -131,6 +131,8 @@
                         txtKeyname.value = k.name;
                         selKeymode.value = k.mode;
                         txtKeyparam.value = k.param;
+                        if ("hotkey" in k)
+                            txtKeyhotkey.value = k.hotkey;
                     }
                     dlgKeydef.showModal();
                     return;
@@ -146,6 +148,8 @@
                         mode: selKeymode.value,
                         param: txtKeyparam.value
                     };
+                    hk = txtKeyhotkey.value.trim();
+                    if (hk) k.hotkey = hk;
                     //console.log(actButton.id);
                     keyDefs[actButton.id] = k;
                     actButton.innerHTML = k.name;
@@ -208,6 +212,10 @@
                 <tr>
                     <td>Param:</td>
                     <td><input type="search" id="txtKeyparam" class="max"></td>
+                </tr>
+                <tr>
+                    <td>Hotkey:</td>
+                    <td><input type="search" id="txtKeyhotkey" class="max"></td>
                 </tr>
             </table><br>
             <button onclick="keyEditClose(true)">Save</button>
