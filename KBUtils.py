@@ -32,6 +32,8 @@ xparam = {
     "chkClipmon": False,
     "chkDown": False,
     "txtListEdit": "prefix1\n#prefix2\nprefix3",
+    "txtMaxitems": "500",
+    "txtMaxitemsize": "5000",
 }
 
 # load parameter file, always merge to xparam
@@ -218,7 +220,7 @@ def editClip(p, s):
     if p == "urldecode": s = urllib.parse.unquote(s)
     if p == "b64decode": s = base64.b64decode(s.encode("ascii")).decode("ascii")
     if p == "b64encode": s = base64.b64encode(s.encode("ascii")).decode("ascii")
-    if p == "totext": s = wcbx.cbText(showCbFmts)
+    if p == "totext": s = wcbx.cbText(showCbFmts).strip()
     if p == "time2epoch": s = int(time.mktime(time.strptime(s, tFormatUi)))
     if p == "epoch2time": s = time.strftime(tFormatUi, time.localtime(int(s)))
     prl(f"New clipboard text:\n{s}")
@@ -256,9 +258,6 @@ def doKey(name, mode, param):
 ### Clipboard monitor #####################################
 
 clips = []
-maxTextLen = 2000
-maxNameLen = 30
-maxClips = 200
 fnclips = fn + ".clips.json"
 clipsWatch = fileWatch.AutoSave(fnclips, 300)
 
@@ -336,6 +335,14 @@ def cmInit():
 def newText(s):
     global clips
     #print(s)
+    maxNameLen = 30
+    maxTextLen = 2000
+    maxClips = 200
+    try: maxTextLen = int(xparam["txtMaxitemsize"])
+    except: xparam["txtMaxitemsize"] = str(maxTextLen)
+    try: maxClips = int(xparam["txtMaxitems"])
+    except: xparam["txtMaxitems"] = str(maxClips)
+
     if len(s) > maxTextLen: return
 
     n = s if len(s) < maxNameLen else s[:maxNameLen] + "..."

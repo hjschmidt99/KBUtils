@@ -36,25 +36,32 @@ def cbData(cbf, res=res):
     return False
 
 def cbText(showCbFmts=False):
-    wcb.OpenClipboard()
-    if showCbFmts:
-        print(f"Current clipboard formats:\n{cbShowfmts()}\n")
+    try:
+        wcb.OpenClipboard()
+        if showCbFmts:
+            print(f"Current clipboard formats:\n{cbShowfmts()}\n")
 
-    res = {}
-    if cbData(wcb.CF_HDROP, res):
-        # file(s) to string
-        s = res["str"]
-        #print(s)
-        s = s.replace("('", "").replace("',)", "").replace("')", "").replace("\\\\", "\\").replace("', '", "\n")
-    elif cbData(CF_HTML, res):
-        s = res["str"]
-    elif cbData(wcb.CF_UNICODETEXT, res):
-        s = res["str"]
-    elif cbData(wcb.CF_TEXT, res):
-        s = res["str"]
+        res = {}
+        if cbData(wcb.CF_HDROP, res):
+            # file(s) to replace
+            s = res["str"]
+            #print(s)
+            s = s.replace("('", "").replace("',)", "").replace("')", "").replace("\\\\", "\\").replace("', '", "\n")
+        elif cbData(CF_HTML, res):
+            s = res["str"]
+        elif cbData(wcb.CF_UNICODETEXT, res):
+            s = res["str"]
+        elif cbData(wcb.CF_TEXT, res):
+            s = res["str"]
 
-    wcb.CloseClipboard()
-    return s
+        try:
+            wcb.CloseClipboard()
+        except:
+            pass
+        return s
+    except:
+        traceback.print_exc()
+    return ""
 
 
 if __name__ == "__main__":

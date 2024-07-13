@@ -131,9 +131,9 @@
                         txtKeyname.value = k.name;
                         selKeymode.value = k.mode;
                         txtKeyparam.value = k.param;
-                        if ("hotkey" in k)
-                            txtKeyhotkey.value = k.hotkey;
+                        txtKeyhotkey.value = ("hotkey" in k) ? k.hotkey : "";
                     }
+                    optChg({ currentTarget: selKeymode })
                     dlgKeydef.showModal();
                     return;
                 }
@@ -252,16 +252,32 @@
             </div>
         </div>
         
-        <div id="divClipmon" class="tabcontent" >
+        <div id="divClipmon" class="tabcontent">
             <div id="divCliplist" style="overflow: auto;"></div>
             <div id="divCliptext" class="divText" style="margin-top:8px">
                 Text: 
                 <span class="right">
                     <input type="checkbox" save="checked" id="chkClipmon" onclick="saveParams()">monitor
+                    <image class="img" title="options" onclick="dlgClipmon.showModal()" src="settings2w.png" />
                 </span>
                 <textarea id="txtCliptext" rows="8"></textarea>
             </div>
         </div>
+        <dialog id="dlgClipmon">
+            <h1>Clipmon Settings</h1>
+            <table width="100%">
+                <tr>
+                    <td>MaxItems:</td>
+                    <td><input type="search" save="value" id="txtMaxitems" class="max"></td>
+                </tr>
+                <tr>
+                    <td>MaxItemSize:</td>
+                    <td><input type="search" save="value" id="txtMaxitemsize" class="max"></td>
+                </tr>
+            </table><br>
+            <button onclick="dlgClipmon.close(); reload();">Save</button>
+            <button onclick="dlgClipmon.close(); loadParams()">Cancel</button>
+        </dialog>
         
         <dialog id="dlgInfo" >
             Info:<br/><textarea id="txta" rows="12" style="width:300px"></textarea><br><br>
