@@ -36,6 +36,7 @@ def cbData(cbf, res=res):
     return False
 
 def cbText(showCbFmts=False):
+    s = ""
     try:
         wcb.OpenClipboard()
         if showCbFmts:
@@ -53,15 +54,14 @@ def cbText(showCbFmts=False):
             s = res["str"]
         elif cbData(wcb.CF_TEXT, res):
             s = res["str"]
-
-        try:
-            wcb.CloseClipboard()
-        except:
-            pass
-        return s
     except:
         traceback.print_exc()
-    return ""
+
+    try:
+        wcb.CloseClipboard()
+    except:
+        pass
+    return s
 
 
 if __name__ == "__main__":

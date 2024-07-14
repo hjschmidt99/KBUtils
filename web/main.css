@@ -2,6 +2,7 @@
     font-family: arial;
     font-size: 10pt;
     vertical-align: middle;
+    color-scheme: dark;
 }
 
 .max {
@@ -69,13 +70,14 @@ dialog {
     min-width: 60%;
     border-radius: 8px;
     border: 2px solid black;
-    background-color: lightyellow;
+    background-color: darkslateblue;
+    color: white;
     overflow: hidden;
 }
 
 dialog td {
-    background-color: lightyellow;
-    color: black;
+    background-color: darkslateblue;
+    color: white;
     overflow: hidden;
 }
 

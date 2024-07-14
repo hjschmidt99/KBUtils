@@ -10,7 +10,17 @@
         <script type="text/javascript">
             var initialized = false;
             window.onload = function() { loadParams(true); }
-            window.onbeforeunload = function() { saveParams(true); }
+            window.onbeforeunload = function(e) { 
+                saveParams(true); 
+                /* conform close - doesn't work
+                var e = e || window.event;
+                if (e) {
+                    e.returnValue = 'Sure?';
+                    e.preventDefault();
+                }
+                return "sure?";
+                */
+            }
 
             async function saveParams(closing=false) {
                 if (!initialized) return;
@@ -87,7 +97,7 @@
 
             eel.expose(clipmonUpdate)
             function clipmonUpdate(html) {
-                e("divCliplist").innerHTML = html;
+                divCliplist.innerHTML = html;
             }
             
 
@@ -132,8 +142,8 @@
                         selKeymode.value = k.mode;
                         txtKeyparam.value = k.param;
                         txtKeyhotkey.value = ("hotkey" in k) ? k.hotkey : "";
+                        keyOptFill(k.mode);
                     }
-                    optChg({ currentTarget: selKeymode })
                     dlgKeydef.showModal();
                     return;
                 }
@@ -154,25 +164,29 @@
                     keyDefs[actButton.id] = k;
                     actButton.innerHTML = k.name;
                     eel.saveKeys(keyDefs);
-                    console.log(keyDefs);
+                    //console.log(keyDefs);
                 }
                 dlgKeydef.close();
             } 
 
-            function optChg(evt) {
-                e = evt.currentTarget;
+            function keyOptFill(v) {
+                var s = "";
+                if (v)
+                    for (const x of keyOptions[v]) 
+                        s += optiontpl.replaceAll("{n}", x);
+                selKeyopt.innerHTML = s;
+            }
 
-                if (e.id == "selKeymode") {
-                    s = ""
-                    if (e.value)
-                        for (const x of keyOptions[e.value]) 
-                            s += optiontpl.replaceAll("{n}", x);
-                    selKeyOpt.innerHTML = s;
+            function optChg(evt) {
+                var ec = evt.currentTarget;
+
+                if (ec.id == "selKeymode") {
+                    keyOptFill(ec.value);
                 }
 
-                if (e.id == "selKeyOpt") {
-                    txtKeyparam.value = e.value;
-                    if (!txtKeyname.value) txtKeyname.value = e.value;
+                if (ec.id == "selKeyopt") {
+                    txtKeyparam.value = ec.value;
+                    if (!txtKeyname.value) txtKeyname.value = ec.value;
                 }
             }
 
@@ -207,7 +221,7 @@
                 <tr>
                     <td>Cmd:</td>
                     <td><select id="selKeymode" onChange="optChg(event)"></select>&nbsp;&nbsp;&nbsp;
-                    <select id="selKeyOpt" onChange="optChg(event)"></select></td>
+                    <select id="selKeyopt" onChange="optChg(event)"></select></td>
                 </tr>
                 <tr>
                     <td>Param:</td>
@@ -280,7 +294,7 @@
         </dialog>
         
         <dialog id="dlgInfo" >
-            Info:<br/><textarea id="txta" rows="12" style="width:300px"></textarea><br><br>
+            Info:<br/><textarea id="txta" rows="12" style="widthq:300px"></textarea><br><br>
             <button onclick="dlgInfo.close();">Close</button>
         </dialog>
     </body>

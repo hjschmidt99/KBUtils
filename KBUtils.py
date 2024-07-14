@@ -368,9 +368,11 @@ def close_callback(route, websockets):
 
 #cmdline_args = []    
 cmdline_args = ["–disable-translate", "–incognito", 
-    f"--window-position={xparam['x']},{xparam['y']}", 
-    f"--window-size={xparam['w']},{xparam['h']}"]
+    #f"--window-position={xparam['x']},{xparam['y']}", 
+    #f"--window-size={xparam['w']},{xparam['h']}"
+]
 eel.start('main.html', 
+    mode="chrome",
     cmdline_args=cmdline_args, 
     port=xparam["port"], 
     position=(xparam["x"], xparam["y"]), 
