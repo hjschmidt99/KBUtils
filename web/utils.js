@@ -93,7 +93,7 @@ function useMru(item) {
 }
 
 
-//  drag and drop support
+// drag and drop support
 
 window.ondragover = function(ev) {
   ev.stopPropagation();
@@ -104,7 +104,7 @@ window.ondragover = function(ev) {
 window.ondrop = function(ev) {
   ev.stopPropagation();
   ev.preventDefault();
-  var s = event.dataTransfer.getData("text/plain");
+  var s = ev.dataTransfer.getData("text/plain");
   ev.target.value = s;
 }
 

@@ -75,7 +75,7 @@ def prt(s):
 
 @eel.expose
 def copy(x):
-    clipboard.copy(x)
+    clipboard.copy(x.strip())
 
 @eel.expose
 def doCmd(cmd, p=None):
