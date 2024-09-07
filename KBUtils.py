@@ -30,6 +30,7 @@ xparam = {
     "chkDash": False,
     "chkPotpl": False,
     "chkClipmon": False,
+    "chkCR": False,
     "chkDown": False,
     "txtListEdit": "prefix1\n#prefix2\nprefix3",
     "txtMaxitems": "500",
@@ -105,14 +106,17 @@ def sendText(x):
     if (x == "clipboard"): x = clipboard.paste()
     dash = " - " if xparam["chkDash"] else " "
     a = ["alt+tab", 500]
-    if xparam["chkPotpl"]: a = a + ["insert", 500]
+    if xparam["chkPotpl"]: 
+        a = a + ["insert", 500]
     a = a + ["f2", 300]
     if xparam["chkPostfix"]: 
         a = a + ["right", f"${dash}{x}"]
     else: 
         a = a + ["home", f"${x}{dash}"]
+    if xparam["chkCR"]: 
+        a = a + ["enter", 500]
     if xparam["chkDown"]: 
-        a = a + ["enter", 500, "down"]
+        a = a + ["down"]
     qSend.put(a)
 
 @eel.expose
