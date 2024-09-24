@@ -44,12 +44,11 @@ def cbText(showCbFmts=False):
 
         res = {}
         if cbData(wcb.CF_HDROP, res):
-            # file(s) to replace
             s = res["str"]
             #print(s)
             s = s.replace("('", "").replace("',)", "").replace("')", "").replace("\\\\", "\\").replace("', '", "\n")
-        elif cbData(CF_HTML, res):
-            s = res["str"]
+        #elif cbData(CF_HTML, res):
+        #    s = res["str"]
         elif cbData(wcb.CF_UNICODETEXT, res):
             s = res["str"]
         elif cbData(wcb.CF_TEXT, res):

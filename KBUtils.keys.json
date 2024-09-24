@@ -43,7 +43,7 @@
     "btnKey13": {
         "name": "browser m3u",
         "mode": "keymacro",
-        "param": "[\"alt+tab\", 500, \"ctrl+shift+e\", 500, \"tab, tab\", 200, \"$m3u\"]"
+        "param": "[\"alt+tab\", 500, \"ctrl+shift+e\", 800, \"tab, tab\", 200, \"$m3u\"]"
     },
     "btnKey14": {
         "name": "browser mpd",
@@ -79,5 +79,10 @@
         "name": "strip",
         "mode": "editclip",
         "param": "strip"
+    },
+    "btnKey16": {
+        "name": "Undo",
+        "mode": "keymacro",
+        "param": "[\"alt+tab\", 500, \"ctrl+z\"]"
     }
 }

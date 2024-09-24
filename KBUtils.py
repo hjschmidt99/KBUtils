@@ -103,7 +103,9 @@ qSend = queue.Queue()
 @eel.expose
 def sendText(x):
     print(f'sendKeys {x}')
-    if (x == "clipboard"): x = clipboard.paste().strip()
+    if (x == "clipboard"): 
+        x = clipboard.paste()
+        x = x.replace("\n", ", ").replace("\r", "").replace("\t", " ").replace("  ", " ").strip()
     dash = " - " if xparam["chkDash"] else " "
     a = ["alt+tab", 500]
     if xparam["chkPotpl"]: 
