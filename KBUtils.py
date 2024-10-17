@@ -107,14 +107,6 @@ macros = {
 }
 
 km = keymacro.KeyMacro()
-qSend = queue.Queue()
-
-def send(keys, callback=None, type=""):
-    qSend.put({
-        "keys": keys,
-        "callback": callback,
-        "type": type
-    })
 
 @eel.expose
 def sendText(x):
@@ -135,38 +127,13 @@ def sendText(x):
         a = a + ["enter", 500]
     if xparam["chkDown"]: 
         a = a + ["down"]
-    send(a)
+    km.send(a)
 
 @eel.expose
 def sendMacro(k, callback=None, type=""):
     print(f'sendMacro {k}')
     if k in macros.keys():
-        send(macros[k], callback, type)
-
-def doSend(a):
-    dump(a)
-    for x in a:
-        if isinstance(x, int):
-            time.sleep(x / 1000.0)
-        elif x[0:1] == "$":
-            keyboard.write(x[1:])
-        else:
-            keyboard.send(x)
-
-def worker():
-    while 1:
-        try:
-            a = qSend.get()
-            doSend(a["keys"])
-            cb = a["callback"]
-            if cb:
-                cb(a["type"])
-        except:
-            traceback.print_exc()
-        time.sleep(1)
-
-th1 = threading.Thread(target=worker, daemon=True)
-th1.start()
+        km.send(macros[k], callback, type)
 
 
 ### Key definitions #######################################
@@ -265,7 +232,7 @@ def doKey(name, mode, param):
             clipboard.copy(s)
 
         if mode == "keymacro":
-            send(json.loads(param))
+            km.send(json.loads(param))
 
         if mode == "internal":
             if param.startswith("buf"): doBuf(param)
@@ -303,7 +270,6 @@ lastClip = clips[len(clips) - 1]["data"]
 def t(n, d, a=""):
     return f"<{n} {a}>{d}</{n}>"
 
-@eel.expose
 def renderClipmon():
     h = ""
     h = h + t("th", "Name", "")
