@@ -2,15 +2,12 @@ import HandleConsole as con
 import sys
 import os
 import json
-import subprocess
 import time
 import datetime
 import traceback
 import eel
 import clipboard
 import keyboard
-import queue
-import threading
 import base64
 import win32clipboard as wcb
 import wcbx
