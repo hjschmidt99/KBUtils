@@ -84,15 +84,17 @@ def doCmd(cmd, p=None):
     print(f'doCmd {cmd}')
 
     if cmd == "FromClipb":
-        qSend.put("text2Link")
+        sendCallback("text2Link")
 
     if cmd == "CopyAll":
-        sendMacro("CopyAll")
-        qSend.put("text2Link")
+        sendMacro("CopyAll", sendCallback, "text2Link")
 
     if cmd == "Tele5":
-        sendMacro("CopyAll")
-        qSend.put("tele5")
+        sendMacro("CopyAll", sendCallback, "tele5")
+
+def sendCallback(type):
+        if type == "text2Link": eel.text2Link(clipboard.paste())
+        if type == "tele5": eel.text2Link(scripts.tele5(clipboard.paste()))
 
 
 ### Send keypresses #######################################
@@ -104,6 +106,13 @@ macros = {
 }
 
 qSend = queue.Queue()
+
+def send(keys, callback=None, type=""):
+    qSend.put({
+        "keys": keys,
+        "callback": callback,
+        "type": type
+    })
 
 @eel.expose
 def sendText(x):
@@ -124,16 +133,13 @@ def sendText(x):
         a = a + ["enter", 500]
     if xparam["chkDown"]: 
         a = a + ["down"]
-    qSend.put(a)
+    send(a)
 
 @eel.expose
-def sendMacro(k):
+def sendMacro(k, callback=None, type=""):
     print(f'sendMacro {k}')
     if k in macros.keys():
-        qSend.put(macros[k])
-
-def sendArray(a):
-    qSend.put(a)
+        send(macros[k], callback, type)
 
 def doSend(a):
     dump(a)
@@ -149,14 +155,13 @@ def worker():
     while 1:
         try:
             a = qSend.get()
-            if isinstance(a, list):
-                doSend(a)
-            if isinstance(a, str):
-                if a == "text2Link": eel.text2Link(clipboard.paste())
-                if a == "tele5": eel.text2Link(scripts.tele5(clipboard.paste()))
+            doSend(a["keys"])
+            cb = a["callback"]
+            if cb:
+                cb(a["type"])
         except:
             traceback.print_exc()
-        eel.sleep(1)
+        time.sleep(1)
 
 th1 = threading.Thread(target=worker, daemon=True)
 th1.start()
@@ -258,7 +263,7 @@ def doKey(name, mode, param):
             clipboard.copy(s)
 
         if mode == "keymacro":
-            sendArray(json.loads(param))
+            send(json.loads(param))
 
         if mode == "internal":
             if param.startswith("buf"): doBuf(param)
