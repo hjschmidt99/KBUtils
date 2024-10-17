@@ -17,6 +17,7 @@ import wcbx
 import urllib.parse
 import fileWatch
 import scripts
+import keymacro
 
 eel.init('web')
 
@@ -105,6 +106,7 @@ macros = {
     "CopyAll": ["alt+tab", 500, "ctrl+a, ctrl+c, ctrl+shift+home, ctrl+shift+home"],
 }
 
+km = keymacro.KeyMacro()
 qSend = queue.Queue()
 
 def send(keys, callback=None, type=""):
