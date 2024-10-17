@@ -16,6 +16,7 @@ import win32clipboard as wcb
 import wcbx
 import urllib.parse
 import fileWatch
+import scripts
 
 eel.init('web')
 
@@ -89,6 +90,10 @@ def doCmd(cmd, p=None):
         sendMacro("CopyAll")
         qSend.put("text2Link")
 
+    if cmd == "Tele5":
+        sendMacro("CopyAll")
+        qSend.put("tele5")
+
 
 ### Send keypresses #######################################
 
@@ -148,6 +153,7 @@ def worker():
                 doSend(a)
             if isinstance(a, str):
                 if a == "text2Link": eel.text2Link(clipboard.paste())
+                if a == "tele5": eel.text2Link(scripts.tele5(clipboard.paste()))
         except:
             traceback.print_exc()
         eel.sleep(1)
