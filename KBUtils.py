@@ -15,6 +15,7 @@ import urllib.parse
 import fileWatch
 import scripts
 import keymacro
+import clipmon
 
 eel.init('web')
 
@@ -51,7 +52,7 @@ def dump(o):
 @eel.expose
 def saveParams(x, closing=False):
     if closing: 
-        saveClips(clips)
+        cm.saveClips(cm.clips)
     for k in x.keys():
         xparam[k] = x[k]
     with open(fncfg, 'w') as f1:
@@ -240,112 +241,39 @@ def doKey(name, mode, param):
 
 ### Clipboard monitor #####################################
 
-clips = []
 fnclips = fn + ".clips.json"
+cm = clipmon.ClipMon(fnclips, xparam)
+lastClip = cm.clips[len(cm.clips) - 1]["data"]
 clipsWatch = fileWatch.AutoSave(fnclips, 300)
-
-def loadClips():
-    try:
-        if os.path.exists(fnclips):
-            with open(fnclips, 'r') as f1:
-                return json.load(f1)
-    except:
-        traceback.print_exc()
-    return []
-
-def saveClips(clips):
-    try:
-        with open(fnclips, 'w') as f1:
-            json.dump(clips, f1, indent=2)
-    except:
-        traceback.print_exc()
-
-clips = loadClips()
-lastClip = clips[len(clips) - 1]["data"]
-
-# html tag with name n, data d, attributes a
-def t(n, d, a=""):
-    return f"<{n} {a}>{d}</{n}>"
-
-def renderClipmon():
-    h = ""
-    h = h + t("th", "Name", "")
-    h = h + t("th", "Size", "width='32px'")
-    h = h + t("th", "Time", "width='140px'")
-    i = '<img class="img1" title="merge all" src="clipboard1.png" onclick="eel.cmCopy(\'\')">'
-    h = h + t("th", i, "width='10px' style='text-align:center'")
-    rows = ""
-    for x in clips:
-        d = ""        
-        d = d + t("td", x["name"])
-        d = d + t("td", x["size"])
-        d = d + t("td", x["time"])
-        i = '<img class="img1" title="copy" src="clipboard1.png" onclick="eel.cmCopy(\'' + x["time"] + '\')">'
-        d = d + t("td", i, "style='text-align:center'")
-        a = 'onclick="eel.cmSelect(\'' + x["time"] + '\')"'
-        rows = t("tr", d, a) + "\n" + rows
-    rows = t("tr", h) + "\n" + rows
-    html = t("table", rows, "class='max clipmon-table'")
-    return html    
-
-def cmFind(t):
-    for x in clips:
-        if x["time"] == t: return x;
-    return None
-
-def cmMerge():
-    s = "\n".join([x["data"] for x in clips])
-    return s
 
 @eel.expose
 def cmCopy(t):
     if t:
-        x = cmFind(t)
+        x = cm.cmFind(t)
         if x: clipboard.copy(x["data"])
     else:
-        clipboard.copy(cmMerge())
+        clipboard.copy(cm.cmMerge())
 
 @eel.expose
 def cmSelect(t):
-    x = cmFind(t)
+    x = cm.cmFind(t)
     eel.setValue("txtCliptext", x["data"])
 
 @eel.expose
 def cmInit():
-    eel.clipmonUpdate(renderClipmon())
+    eel.clipmonUpdate(cm.renderClipmon())
 
 def newText(s):
-    global clips
-    #print(s)
-    maxNameLen = 30
-    maxTextLen = 2000
-    maxClips = 200
-    try: maxTextLen = int(xparam["txtMaxitemsize"])
-    except: xparam["txtMaxitemsize"] = str(maxTextLen)
-    try: maxClips = int(xparam["txtMaxitems"])
-    except: xparam["txtMaxitems"] = str(maxClips)
-
-    if len(s) > maxTextLen: return
-
-    n = s if len(s) < maxNameLen else s[:maxNameLen] + "..."
-    for c in "<>\"\'": n = n.replace(c, "_")
-    x = {
-        "time": datetime.datetime.now().replace(microsecond=0).isoformat(sep=" "),
-        "size": len(s),
-        "name": n,
-        "data": s
-    }
-    clips.append(x)
-    if len(clips) > maxClips: clips = clips[1:]
-    eel.clipmonUpdate(renderClipmon())
-    if clipsWatch.saveNeeded(): saveClips(clips)
+    cm.newText(s)
+    eel.clipmonUpdate(cm.renderClipmon())
+    if clipsWatch.saveNeeded(): cm.saveClips(cm.clips)
 
 
 ### Start UI ##############################################
 
 def close_callback(route, websockets):
     if not websockets:
-        saveClips(clips)
+        cm.saveClips(cm.clips)
         exit()
 
 #cmdline_args = []    
