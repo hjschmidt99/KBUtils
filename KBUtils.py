@@ -92,8 +92,9 @@ def doCmd(cmd, p=None):
         sendMacro("CopyAll", sendCallback, "tele5")
 
 def sendCallback(type):
-        if type == "text2Link": eel.text2Link(clipboard.paste())
-        if type == "tele5": eel.text2Link(scripts.tele5(clipboard.paste()))
+    ign = ["small screenshot"]
+    if type == "text2Link": eel.text2Link(scripts.text2linkIngnore(clipboard.paste(), ign))
+    if type == "tele5": eel.text2Link(scripts.tele5(clipboard.paste()))
 
 
 ### Send keypresses #######################################
@@ -101,7 +102,7 @@ def sendCallback(type):
 macros = { 
     "Marco1": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del"],
     "Marco2": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del, enter", 500, "down"],
-    "CopyAll": ["alt+tab", 500, "ctrl+a, ctrl+c, ctrl+shift+home, ctrl+shift+home"],
+    "CopyAll": ["alt+tab", 500, "ctrl+a, ctrl+c, ctrl+shift+home, ctrl+shift+home", 500],
 }
 
 km = keymacro.KeyMacro()
