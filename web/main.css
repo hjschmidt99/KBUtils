@@ -129,6 +129,11 @@ dialog td {
     display: none;
 }
 
+.clipmon-table {
+    white-space: nowrap;
+    /*table-layout: fixed;*/
+}
+
 .clipmon-table,
 .clipmon-table tr, 
 .clipmon-table td {
@@ -136,6 +141,13 @@ dialog td {
     /* border-spacing: 2px 2px; */
     border: 1px solid white;
     padding: 2px 5px;
+}
+
+.tdtruncate {
+    white-space: nowrap; 
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    max-width:1px;
 }
 
 .prefix-table,

@@ -36,7 +36,7 @@ class ClipMon:
 
     def renderClipmon(self):
         h = ""
-        h = h + t("th", "Name", "")
+        h = h + t("th", "Text", "")
         h = h + t("th", "Size", "width='32px'")
         h = h + t("th", "Time", "width='140px'")
         i = '<img class="img1" title="merge all" src="clipboard1.png" onclick="eel.cmCopy(\'\')">'
@@ -44,7 +44,7 @@ class ClipMon:
         rows = ""
         for x in self.clips:
             d = ""        
-            d = d + t("td", x["name"])
+            d = d + t("td", x["name"], "class='tdtruncate'")
             d = d + t("td", x["size"])
             d = d + t("td", x["time"])
             i = '<img class="img1" title="copy" src="clipboard1.png" onclick="eel.cmCopy(\'' + x["time"] + '\')">'
@@ -52,7 +52,7 @@ class ClipMon:
             a = 'onclick="eel.cmSelect(\'' + x["time"] + '\')"'
             rows = t("tr", d, a) + "\n" + rows
         rows = t("tr", h) + "\n" + rows
-        html = t("table", rows, "class='max clipmon-table'")
+        html = t("table", rows, "class='clipmon-table max'")
         return html    
 
     def cmFind(self, t):
@@ -72,7 +72,6 @@ class ClipMon:
 
     def newText(self, s):
         #print(s)
-        maxNameLen = 30
         maxTextLen = 2000
         maxClips = 200
         maxTextLen = self.getxparam("txtMaxitemsize", maxTextLen)
@@ -80,8 +79,8 @@ class ClipMon:
 
         if len(s) > maxTextLen: return
 
-        n = s if len(s) < maxNameLen else s[:maxNameLen] + "..."
-        for c in "<>\"\'": n = n.replace(c, "_")
+        n = s.splitlines()[0]
+        #for c in "<>\"\'": n = n.replace(c, "_")
         x = {
             "time": datetime.datetime.now().replace(microsecond=0).isoformat(sep=" "),
             "size": len(s),

@@ -53,7 +53,7 @@
     "btnKey15": {
         "name": "browser index",
         "mode": "keymacro",
-        "param": "[\"alt+tab\", 500, \"ctrl+shift+e\", 800, \"tab, tab\", 800, \"$index\"]"
+        "param": "[\"alt+tab\", 500, \"ctrl+shift+e\", 800, \"tab, tab\", 1000, \"$index\"]"
     },
     "btnKey19": {
         "name": "bufClear",
