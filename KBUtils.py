@@ -16,6 +16,7 @@ import fileWatch
 import scripts
 import keymacro
 import clipmon
+import MovieList as ML
 
 eel.init('web')
 
@@ -35,6 +36,7 @@ xparam = {
     "txtListEdit": "prefix1\n#prefix2\nprefix3",
     "txtMaxitems": "500",
     "txtMaxitemsize": "5000",
+    "chkMovieList": False,
 }
 
 # load parameter file, always merge to xparam
@@ -270,6 +272,27 @@ def newText(s):
     if clipsWatch.saveNeeded(): cm.saveClips(cm.clips)
 
 
+### MovileList#############################################
+
+ML.init()
+
+@eel.expose
+def mlSearch(text):
+    if "\\" in text: return
+    res = ML.search(text)
+    html = ML.renderSearchResult(res)
+    eel.movielistUpdate(text, html)
+
+@eel.expose
+def mlCopy(i):
+    d = ML.res[i]
+    clipboard.copy(d["path"])
+
+@eel.expose
+def mlData(i):
+    return ML.res[i]
+
+
 ### Start UI ##############################################
 
 def close_callback(route, websockets):
@@ -299,12 +322,12 @@ while True:
 
     try: 
         # check clipboard for changes
-        if xparam["chkClipmon"]:
-            #clip = clipboard.paste()
-            clip = wcbx.cbText()
-            if clip and clip != lastClip:
-                newText(clip)
-                lastClip = clip
+        #clip = clipboard.paste()
+        clip = wcbx.cbText()
+        if clip and clip != lastClip:
+            lastClip = clip
+            if xparam["chkClipmon"]: newText(clip)
+            if xparam["chkMovieList"]: mlSearch(clip)
 
     except:
         lastexp = traceback.format_exc()

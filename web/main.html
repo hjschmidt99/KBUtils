@@ -45,6 +45,7 @@
                 resizeElement(divTextList);
                 resizeElement(divLinks);
                 resizeElement(divCliplist, divCliptext.offsetHeight);
+                resizeElement(divSearchList);
             }
             
             function selTab(evt, tabName) {
@@ -100,6 +101,19 @@
                 divCliplist.innerHTML = html;
             }
             
+
+            // movielist-----------------------------------
+
+            eel.expose(movielistUpdate)
+            function movielistUpdate(text, html) {
+                txtSearchText.value = text;
+                divSearchList.innerHTML = html;
+            }
+            
+            function mlDlg(i) {
+                x = eel.mlData(i)();
+                //todo: fill dialog
+            }
 
             // keys ---------------------------------------
 
@@ -205,9 +219,19 @@
             <button class="tablinks" onclick="selTab(event, 'divPrefixFile')">PrefixFile</button>
             <button class="tablinks" onclick="selTab(event, 'divText2Link')">Text2Link</button>
             <button class="tablinks" onclick="selTab(event, 'divKeydef')">Keys</button>
+            <button class="tablinks" onclick="selTab(event, 'divSearch')">Search</button>
         </div>
         <hr style="margin-top:0px;">
         
+        <div id="divSearch" class="tabcontent" >
+            <table class="searchCtrl"><tr>
+                <td><input type="checkbox" title="clipmon" save="checked" id="chkMovieList" onclick="saveParams()"></td>
+                <td width="95%"><input type="search" class="max" id="txtSearchText" onclick=""></td>
+                <td><button class="btn" onclick="eel.mlSearch(txtSearchText.value);">Search</button></td>
+            </tr></table>
+            <div id="divSearchList" style="overflow: auto;"></div>
+        </div>
+
         <div id="divKeydef" class="tabcontent" >
             <input type="checkbox" id="chkEditkey">edit next key
             <br><div id ="divKeys">
