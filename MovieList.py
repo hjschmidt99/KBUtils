@@ -39,18 +39,14 @@ def makeQuery(s, mode="fuzzy"):
 def renderSearchResult(res):
     h = ""
     h = h + t("th", "Path", "")
-    h = h + t("th", "C", "width='6px' style='text-align:center'")
-    h = h + t("th", "P", "width='6px' style='text-align:center'")
-    h = h + t("th", "E", "width='6px' style='text-align:center'")
+    h = h + t("th", "Action", "width='80px' style='text-align:center'")
     rows = ""
     for i, x in enumerate(res):
         d = ""        
         d = d + t("td", x["path"], "")
         img = f'<img class="img1" title="copy" src="clipboard1.png" onclick="eel.mlAction(0, {i})">'
-        d = d + t("td", img, "style='text-align:center'")
-        img = f'<img class="img1" title="play" src="play.png" onclick="eel.mlAction(1, {i})">'
-        d = d + t("td", img, "style='text-align:center'")
-        img = f'<img class="img1" title="explore" src="explore.png" onclick="eel.mlAction(2, {i})">'
+        img = img + f'<img class="img1" title="play" src="play.png" onclick="eel.mlAction(1, {i})">'
+        img = img + f'<img class="img1" title="explore" src="explore.png" onclick="eel.mlAction(2, {i})">'
         d = d + t("td", img, "style='text-align:center'")
         a = f'onclick="mlDlg({i})"'
         rows = t("tr", d, a) + "\n" + rows

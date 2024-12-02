@@ -278,11 +278,12 @@ def newText(s):
 ML.init()
 
 @eel.expose
-def mlSearch(text):
+def mlSearch(text, fromPaste=False):
     if any(c in text for c in ["\\/<>"]): return
+    if fromPaste: eel.movielistPaste(text)
     res = ML.search(text)
     html = ML.renderSearchResult(res)
-    eel.movielistUpdate(text, html)
+    eel.movielistUpdate(html)
 
 @eel.expose
 def mlAction(a, i):
@@ -331,7 +332,7 @@ while True:
         if clip and clip != lastClip:
             lastClip = clip
             if xparam["chkClipmon"]: newText(clip)
-            if xparam["chkMovieList"]: mlSearch(clip)
+            if xparam["chkMovieList"]: mlSearch(clip, True)
 
     except:
         lastexp = traceback.format_exc()

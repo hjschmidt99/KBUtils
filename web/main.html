@@ -104,9 +104,16 @@
 
             // movielist-----------------------------------
 
-            eel.expose(movielistUpdate)
-            function movielistUpdate(text, html) {
+            var lastSearch = "";
+
+            eel.expose(movielistPaste)
+            function movielistPaste(text) {
                 txtSearchText.value = text;
+                lastSearch = text;
+            }
+            
+            eel.expose(movielistUpdate)
+            function movielistUpdate(html) {
                 divSearchList.innerHTML = html;
             }
             
@@ -241,7 +248,8 @@
                     onfocus="this.selectedIndex=-1" style="width: 20px;">
                     <option value=""></option>
                 </select>History&nbsp;&nbsp;
-                <button id="btnSearch" class="btnml" onclick="doSearch(true);" >Search</button>
+                <button class="btnml" onclick="txtSearchText.value=lastSearch; doSearch(true);" >Last</button>
+                <button id="btnSearch" class="btnml right" onclick="doSearch(true);" >Search</button>
             </div>
             <div id="divSearchList" style="overflow: auto;"></div>
         </div>
