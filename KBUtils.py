@@ -1,6 +1,7 @@
 import HandleConsole as con
 import sys
 import os
+import subprocess
 import json
 import time
 import datetime
@@ -272,21 +273,24 @@ def newText(s):
     if clipsWatch.saveNeeded(): cm.saveClips(cm.clips)
 
 
-### MovileList#############################################
+### MovileList ############################################
 
 ML.init()
 
 @eel.expose
 def mlSearch(text):
-    if "\\" in text: return
+    if any(c in text for c in ["\\/<>"]): return
     res = ML.search(text)
     html = ML.renderSearchResult(res)
     eel.movielistUpdate(text, html)
 
 @eel.expose
-def mlCopy(i):
+def mlAction(a, i):
     d = ML.res[i]
-    clipboard.copy(d["path"])
+    p = d["path"]
+    if a == 0: clipboard.copy(p)
+    if a == 1: subprocess.Popen(f'"{p}"', shell=True)
+    if a == 2: subprocess.Popen(f'explorer.exe /select, "{p}"')
 
 @eel.expose
 def mlData(i):

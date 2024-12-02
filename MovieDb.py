@@ -4,7 +4,6 @@ import sys
 import datetime
 import glob
 import json
-import re
 import pymongo
 
 connStr = "mongodb://localhost:27017/"
@@ -68,24 +67,6 @@ def search(q, limit=200, remove_id=True):
     print(json.dumps(res, indent=4))
     return res
 
-def makeQuery(s, mode="fuzzy"):
-    if mode == "fuzzy":
-        # replace non aplphanumerics with blank
-        s = re.sub("[^0-9a-zA-Z]+", " ", s)
-        # replace multiple blanks with one
-        s = " ".join(s.split())
-        # add a leading an trailing blank
-        s = " " + s + " "
-        # replace blanks win regex "any string"
-        s = s.replace(" ", ".*")
-        print(f"normalized regex: {s}")
-        q = {"file": {"$regex": s, "$options": "i"}}
-    if mode == "regex":
-        q = {"file": {"$regex": s, "$options": "i"}}
-    if mode == "text":
-        q = {"$text": {"$search": s}}
-    return q
-
 if __name__ == "__main__":
     dbConnect()
 
@@ -98,9 +79,8 @@ if __name__ == "__main__":
 
     else:
         #addMany(r"D:\Data\Text\Video33.txt")
-        qr = "infin y ei"
-        qr = "Stargirl     Teil "
-        q = makeQuery(qr)
+        s = "Stargirl"
+        q = {"$text": {"$search": s}}
         search(q)
 
     if not "debugSession" in os.environ.keys(): input("...")

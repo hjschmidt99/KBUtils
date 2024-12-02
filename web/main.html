@@ -115,6 +115,16 @@
                 //todo: fill dialog
             }
 
+            function doSearchEnter(event) {
+                if (event.key == "Enter")
+                    doSearch(true);
+            }
+
+            function doSearch(mru) {
+                if (mru) addMru(txtSearchText);
+                eel.mlSearch(txtSearchText.value);
+            }
+
             // keys ---------------------------------------
 
             var actButton;
@@ -224,11 +234,15 @@
         <hr style="margin-top:0px;">
         
         <div id="divSearch" class="tabcontent" >
-            <table class="searchCtrl"><tr>
-                <td><input type="checkbox" title="clipmon" save="checked" id="chkMovieList" onclick="saveParams()"></td>
-                <td width="95%"><input type="search" class="max" id="txtSearchText" onclick=""></td>
-                <td><button class="btn" onclick="eel.mlSearch(txtSearchText.value);">Search</button></td>
-            </tr></table>
+            <input type="search" class="max" id="txtSearchText" onkeyup="doSearchEnter(event)" >
+            <div style="padding:8px 0px;">
+                <input type="checkbox" title="clipmon" save="checked" id="chkMovieList" onclick="saveParams()">enable&nbsp;&nbsp;
+                <select id="txtSearchText_mru" class="mru" save="mruqqq" onchange="useMru(this); doSearch(false);" 
+                    onfocus="this.selectedIndex=-1" style="width: 20px;">
+                    <option value=""></option>
+                </select>History&nbsp;&nbsp;
+                <button id="btnSearch" class="btnml" onclick="doSearch(true);" >Search</button>
+            </div>
             <div id="divSearchList" style="overflow: auto;"></div>
         </div>
 

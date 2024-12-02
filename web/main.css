@@ -150,6 +150,15 @@ dialog td {
     max-width:1px;
 }
 
+.movielist-table,
+.movielist-table tr, 
+.movielist-table td {
+    border-collapse: collapse;
+    /* border-spacing: 2px 2px; */
+    border: 1px solid white;
+    padding: 2px 5px;
+}
+
 .prefix-table,
 .prefix-table tr,
 .prefix-table td {
@@ -161,6 +170,15 @@ dialog td {
     color: white;
     background-color: black;
     float: left;
+    border: none;
+    height: 18px;
+    margin: 0px;
+}
+
+.btnml {
+    color: white;
+    background-color: black;
+    float: right;
     border: none;
     height: 18px;
     margin: 0px;
