@@ -8,12 +8,14 @@ import pymongo
 
 connStr = "mongodb://localhost:27017/"
 dbName = "db"
-collectionName = "files"
+collectionName = "files1"
 indexedField = "file"
 extFilter = [".ts", ".mp4", ".mpg", ".vob", ".avi"]
+client = None
 
 def dbConnect():
     global client, db, coll
+    if client: client.close()
     client = pymongo.MongoClient(connStr)
     db = client[dbName]
     coll = db[collectionName]
@@ -67,6 +69,27 @@ def search(q, limit=200, remove_id=True):
     print(json.dumps(res, indent=4))
     return res
 
+def purgeFiles():
+    print("purging files in DB")
+    # find files with size
+    q = {"size": {"$gt": 0}}
+    cursor = coll.find(q)
+    rem = []
+    for x in cursor:
+        path = x["path"]
+        # is root dir available?
+        a = path.split("\\")
+        root = f"{a[0]}\\{a[1]}"
+        if os.path.exists(root):
+            # does file still exist?
+            if not os.path.isfile(path):
+                print(f"remove: {path}")
+                rem.append(x["_id"])
+        else:
+            print(f'root not available: {path}')
+    for rx in rem:
+        coll.delete_one({"_id": rx})
+
 if __name__ == "__main__":
     dbConnect()
 
@@ -75,7 +98,12 @@ if __name__ == "__main__":
         for x1 in sys.argv[1:]:
             addMany(x1)
         t1 = datetime.datetime.now()
-        print(f"done in {t1 - t0}")
+        print(f"addMnay done in {t1 - t0}")
+
+        t0 = datetime.datetime.now()
+        purgeFiles()
+        t1 = datetime.datetime.now()
+        print(f"purgeFiles done in {t1 - t0}")
 
     else:
         #addMany(r"D:\Data\Text\Video33.txt")

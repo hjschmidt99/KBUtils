@@ -1,7 +1,3 @@
-import os
-import sys
-import datetime
-import json
 import re
 import MovieDb as mdb
 
@@ -9,7 +5,8 @@ import MovieDb as mdb
 def t(n, d, a=""):
     return f"<{n} {a}>{d}</{n}>"
 
-def init():
+def init(i):
+    mdb.collectionName = f"files{i}"
     mdb.dbConnect()
 
 def search(q, limit=200):

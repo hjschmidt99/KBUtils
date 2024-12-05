@@ -32,6 +32,7 @@
                 var x = await eel.loadParams(first)();
                 setParams(x);
                 makeTextList();
+                selectDb(x.selectedDb)
                 initialized = true;
             }
             
@@ -83,7 +84,7 @@
                 var s = "";
                 var lastx = "";
                 t = t.replace("\r", "").replace("\t", " ");
-                a = t.split("\n");
+                var a = t.split("\n");
                 a.forEach(x => {
                     var x1 = escapeHtml(x);
                     if (x1 != lastx)
@@ -118,7 +119,7 @@
             }
             
             function mlDlg(i) {
-                x = eel.mlData(i)();
+                var x = eel.mlData(i)();
                 //todo: fill dialog
             }
 
@@ -127,10 +128,19 @@
                     doSearch(true);
             }
 
-            function doSearch(mru) {
+            function doSearch(mru=true) {
                 if (mru) addMru(txtSearchText);
                 eel.mlSearch(txtSearchText.value);
             }
+
+            function selectDb(i) {
+                btndb1.className = btndb1.className.replace(" dbactive", "");
+                btndb2.className = btndb2.className.replace(" dbactive", "");
+                e("btndb" + i).className += " dbactive";
+                eel.mlDb(i);
+                doSearch(false);
+            } 
+
 
             // keys ---------------------------------------
 
@@ -141,7 +151,7 @@
             var optiontpl = '<option value="{n}">{n}</option>\n'
 
             async function keysInit() {
-                s = "";
+                var s = "";
                 for (let i = 1; i < 37; i++)
                     s += buttontpl.replaceAll("{n}", i.toString());
                 divKeys.innerHTML = s;
@@ -244,12 +254,16 @@
             <input type="search" class="max" id="txtSearchText" onkeyup="doSearchEnter(event)" >
             <div style="padding:8px 0px;">
                 <input type="checkbox" title="clipmon" save="checked" id="chkMovieList" onclick="saveParams()">enable&nbsp;&nbsp;
-                <select id="txtSearchText_mru" class="mru" save="mruqqq" onchange="useMru(this); doSearch(false);" 
+                <select id="txtSearchText_mru" class="mru" save="mruqqq" onchange="useMru(this); doSearch();" 
                     onfocus="this.selectedIndex=-1" style="width: 20px;">
                     <option value=""></option>
-                </select>History&nbsp;&nbsp;
-                <button class="btnml" onclick="txtSearchText.value=lastSearch; doSearch(true);" >Last</button>
-                <button id="btnSearch" class="btnml right" onclick="doSearch(true);" >Search</button>
+                </select>History
+                &nbsp;&nbsp;&nbsp;
+                <button class="btnml" onclick="txtSearchText.value=lastSearch; doSearch();" >Last</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;DB:
+                <button id="btndb1" class="btndb dbactive" onclick="selectDb(1)" >1</button>
+                <button id="btndb2" class="btndb" onclick="selectDb(2)" >2</button>
+                <button id="btnSearch" class="btnml right" onclick="doSearch();" >Search</button>
             </div>
             <div id="divSearchList" style="overflow: auto;"></div>
         </div>

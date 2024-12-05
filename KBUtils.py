@@ -38,6 +38,7 @@ xparam = {
     "txtMaxitems": "500",
     "txtMaxitemsize": "5000",
     "chkMovieList": False,
+    "selectedDb": 1,
 }
 
 # load parameter file, always merge to xparam
@@ -275,7 +276,7 @@ def newText(s):
 
 ### MovileList ############################################
 
-ML.init()
+ML.init(xparam["selectedDb"])
 
 @eel.expose
 def mlSearch(text, fromPaste=False):
@@ -296,6 +297,12 @@ def mlAction(a, i):
 @eel.expose
 def mlData(i):
     return ML.res[i]
+
+@eel.expose
+def mlDb(i):
+    ML.init(i)
+    x = {"selectedDb": i}
+    saveParams(x)
 
 
 ### Start UI ##############################################

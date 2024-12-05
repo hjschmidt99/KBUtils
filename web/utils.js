@@ -64,9 +64,7 @@ function setParams(x) {
 
 // a textbox can have a selectbox mru list with the id postfix _mru
 
-var mrumax = 10
-
-function addMru(item) {
+function addMru(item, mrumax=10) {
   var mru = document.getElementById(item.id + "_mru");
   v = item.value;
   
