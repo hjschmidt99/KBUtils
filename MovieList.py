@@ -1,5 +1,6 @@
 import re
 import MovieDb as mdb
+import datetime
 
 # html tag with name n, data d, attributes a
 def t(n, d, a=""):
@@ -40,7 +41,7 @@ def renderSearchResult(res):
     rows = ""
     for i, x in enumerate(res):
         d = ""        
-        d = d + t("td", x["path"], "")
+        d = d + t("td", x["path"], "class='wrapword'")
         img = f'<img class="img1" title="copy" src="clipboard1.png" onclick="eel.mlAction(0, {i})">'
         img = img + f'<img class="img1" title="play" src="play.png" onclick="eel.mlAction(1, {i})">'
         img = img + f'<img class="img1" title="explore" src="explore.png" onclick="eel.mlAction(2, {i})">'
@@ -50,4 +51,14 @@ def renderSearchResult(res):
     rows = t("tr", h) + "\n" + rows
     html = t("table", rows, "class='movielist-table max'")
     return html    
+
+def updateDb(txtFileOrFolder):
+    print(f"db update ({mdb.coll}) from {txtFileOrFolder}")
+    t0 = datetime.datetime.now()
+    mdb.addMany(txtFileOrFolder)
+    t1 = datetime.datetime.now()
+    print(f"db update done in {t1 - t0}")
+
+def purgeFiles():
+    mdb.purgeFiles()
 

@@ -280,7 +280,7 @@ ML.init(xparam["selectedDb"])
 
 @eel.expose
 def mlSearch(text, fromPaste=False):
-    if any(c in text for c in ["\\/<>"]): return
+    if any(c in text for c in ["\\\/<>"]): return
     if fromPaste: eel.movielistPaste(text)
     res = ML.search(text)
     html = ML.renderSearchResult(res)
@@ -303,6 +303,23 @@ def mlDb(i):
     ML.init(i)
     x = {"selectedDb": i}
     saveParams(x)
+
+#test
+#ML.purgeFiles()            
+
+# use files for db update
+if len(sys.argv) > 1:
+    try:
+        con.showConsole(con.conOn)
+        for fx in sys.argv[1:]:
+            ML.updateDb(fx)
+        ML.purgeFiles()            
+        input("...")
+    except:
+        con.showConsole(con.conOn)
+        traceback.print_exc()
+        input("...")
+    sys.exit()
 
 
 ### Start UI ##############################################

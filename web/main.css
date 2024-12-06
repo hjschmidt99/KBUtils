@@ -150,6 +150,10 @@ dialog td {
     max-width:1px;
 }
 
+.movielist-table {
+    table-layout: fixed;
+}
+
 .movielist-table,
 .movielist-table tr, 
 .movielist-table td {
@@ -157,6 +161,10 @@ dialog td {
     /* border-spacing: 2px 2px; */
     border: 1px solid white;
     padding: 2px 5px;
+}
+
+.wrapword {
+    overflow-wrap: break-word;
 }
 
 .prefix-table,

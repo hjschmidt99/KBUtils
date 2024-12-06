@@ -10,7 +10,7 @@ connStr = "mongodb://localhost:27017/"
 dbName = "db"
 collectionName = "files1"
 indexedField = "file"
-extFilter = [".ts", ".mp4", ".mpg", ".vob", ".avi"]
+extFilter = [".ts", ".mp4", ".mpg", ".vob", ".avi", ".wmv", ".mpeg", ".flv", ".asf"]
 client = None
 
 def dbConnect():
@@ -70,12 +70,15 @@ def search(q, limit=200, remove_id=True):
     return res
 
 def purgeFiles():
-    print("purging files in DB")
+    print(f"purging files in DB ({collectionName})")
+    t0 = datetime.datetime.now()
     # find files with size
     q = {"size": {"$gt": 0}}
     cursor = coll.find(q)
     rem = []
+    n = 0
     for x in cursor:
+        n = n + 1
         path = x["path"]
         # is root dir available?
         a = path.split("\\")
@@ -89,6 +92,8 @@ def purgeFiles():
             print(f'root not available: {path}')
     for rx in rem:
         coll.delete_one({"_id": rx})
+    t1 = datetime.datetime.now()
+    print(f"purged {len(rem)} files of {n} db entries in {t1 - t0} sec")
 
 if __name__ == "__main__":
     dbConnect()
@@ -99,11 +104,7 @@ if __name__ == "__main__":
             addMany(x1)
         t1 = datetime.datetime.now()
         print(f"addMnay done in {t1 - t0}")
-
-        t0 = datetime.datetime.now()
         purgeFiles()
-        t1 = datetime.datetime.now()
-        print(f"purgeFiles done in {t1 - t0}")
 
     else:
         #addMany(r"D:\Data\Text\Video33.txt")
