@@ -280,7 +280,7 @@ ML.init(xparam["selectedDb"])
 
 @eel.expose
 def mlSearch(text, fromPaste=False):
-    if any(c in text for c in ["\\\/<>"]): return
+    if any(c in text for c in "\\\/<>"): return
     if fromPaste: eel.movielistPaste(text)
     res = ML.search(text)
     html = ML.renderSearchResult(res)
