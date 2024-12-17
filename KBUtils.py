@@ -306,7 +306,7 @@ def mlDb(i):
 
 #test
 #ML.purgeFiles()            
-#ML.updateDb("D:\\DownloadX\\Temp")
+ML.updateDb("D:\\Download\\Media")
 
 # use files for db update
 if len(sys.argv) > 1:
