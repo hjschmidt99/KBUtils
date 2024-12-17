@@ -14,7 +14,8 @@ extFilter = [".ts", ".mp4", ".mpg", ".vob", ".avi", ".wmv", ".mpeg", ".flv", ".a
 client = None
 
 def dbConnect():
-    global client, db, coll
+    global client, db, coll, roots
+    roots = []
     if client: client.close()
     client = pymongo.MongoClient(connStr)
     db = client[dbName]
@@ -40,13 +41,32 @@ def dbItem(path, extFilter):
         })
     return o1
 
+def checkRoot(fn1):
+    a = fn1.lower().split("\\")
+    root = a[1]
+    if root in roots: return True
+    roots.append(root)
+    q = {"path": {"$regex": f".\:\\{root}\\.*", "$options": "i"}}
+    cursor = coll.find(q, limit=1)
+    for x in cursor:
+        return True
+    res = input("\nroot folder '{root}' not yet in current DB! Continue? [y|N]").strip().lower()
+    if res == "y":
+        return True
+    return False
+
 def addFile(fn1):
     x1 = coll.find_one({"path": fn1})
     if not x1:
+        if not checkRoot(fn1):
+            #return False
+            # for now do a hard exit
+            sys.exit()
         x2 = dbItem(fn1, extFilter)
         if x2:
             print(fn1)
             coll.insert_one(x2)
+    return True
 
 def addMany(src):
     if os.path.isfile(src):

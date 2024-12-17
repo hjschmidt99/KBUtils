@@ -280,7 +280,7 @@ ML.init(xparam["selectedDb"])
 
 @eel.expose
 def mlSearch(text, fromPaste=False):
-    if any(c in text for c in "\\\/<>"): return
+    if any(c in text for c in ["\\", "://", "<", ">"]): return
     if fromPaste: eel.movielistPaste(text)
     res = ML.search(text)
     html = ML.renderSearchResult(res)
@@ -306,6 +306,7 @@ def mlDb(i):
 
 #test
 #ML.purgeFiles()            
+#ML.updateDb("D:\\DownloadX\\Temp")
 
 # use files for db update
 if len(sys.argv) > 1:
