@@ -110,6 +110,7 @@
             eel.expose(movielistPaste)
             function movielistPaste(text) {
                 txtSearchText.value = text;
+                addMru(txtSearchText);
                 lastSearch = text;
             }
             
@@ -125,11 +126,11 @@
 
             function doSearchEnter(event) {
                 if (event.key == "Enter")
-                    doSearch(true);
+                    doSearch();
             }
 
-            function doSearch(mru=true) {
-                if (mru) addMru(txtSearchText);
+            function doSearch() {
+                addMru(txtSearchText);
                 eel.mlSearch(txtSearchText.value);
             }
 
@@ -138,7 +139,7 @@
                 btndb2.className = btndb2.className.replace(" dbactive", "");
                 e("btndb" + i).className += " dbactive";
                 eel.mlDb(i);
-                doSearch(false);
+                doSearch();
             } 
 
 
