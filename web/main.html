@@ -76,7 +76,9 @@
             function doCopy(event) {
                 var x = event.currentTarget
                 x.style.color = "yellow";
-                eel.copy(unescapeHtml(x.innerHTML));
+                s = x.innerHTML;
+                s = unescapeHtml(s);
+                eel.copy(s);
             } 
 
             eel.expose(text2Link)

@@ -80,7 +80,9 @@ def prt(s):
 
 @eel.expose
 def copy(x):
-    clipboard.copy(x.strip())
+    x = x.strip()
+    x = scripts.text2linkAdaptLine(x)
+    clipboard.copy(x)
 
 @eel.expose
 def doCmd(cmd, p=None):
@@ -306,7 +308,7 @@ def mlDb(i):
 
 #test
 #ML.purgeFiles()            
-ML.updateDb("D:\\Download\\Media")
+#ML.updateDb("D:\\Download\\Media")
 
 # use files for db update
 if len(sys.argv) > 1:

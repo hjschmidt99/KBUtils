@@ -11,6 +11,15 @@ import urllib.parse
 import re
 
 
+def text2linkAdaptLine(x):
+    t1 = "RELOAD "
+    if x.upper().startswith(t1):
+        x = x[len(t1):]
+        if x.endswith("m"):
+            x = x[:-1]
+    return x
+
+
 def text2linkIngnore(text, ign):
     res = []
     for x in text.splitlines():

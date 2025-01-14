@@ -49,7 +49,6 @@ def checkRoot(fn1):
     q = {"path": {"$regex": f".\\:\\\\{root}\\\\.*", "$options": "i"}}
     cursor = coll.find(q, limit=1)
     for x in cursor:
-        print(x)
         return True
     res = input("\nroot folder '{root}' not yet in current DB! Continue? [y|N]").strip().lower()
     if res == "y":
