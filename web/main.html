@@ -188,7 +188,8 @@
                         txtKeyhotkey.value = ("hotkey" in k) ? k.hotkey : "";
                         keyOptFill(k.mode);
                     }
-                    dlgKeydef.showModal();
+                    e("dlgKeydef").showModal();
+                    //dlgKeydef.showModal();
                     return;
                 }
 
@@ -210,7 +211,7 @@
                     eel.saveKeys(keyDefs);
                     //console.log(keyDefs);
                 }
-                dlgKeydef.close();
+                e("dlgKeydef").close();
             } 
 
             function keyOptFill(v) {
@@ -256,8 +257,9 @@
         <div id="divSearch" class="tabcontent" >
             <input type="search" class="max" id="txtSearchText" onkeyup="doSearchEnter(event)" >
             <div style="padding:8px 0px;">
-                <input type="checkbox" title="clipmon" save="checked" id="chkMovieList" onclick="saveParams()">enable&nbsp;&nbsp;
-                <select id="txtSearchText_mru" class="mru" save="mruqqq" onchange="useMru(this); doSearch();" 
+                <input type="checkbox" title="clipmon" save="checked" id="chkMovieList" onclick="saveParams()">enable
+                &nbsp;&nbsp;
+                <select id="txtSearchText_mru" class="mru" onchange="useMru(this); doSearch();" 
                     onfocus="this.selectedIndex=-1" style="width: 20px;">
                     <option value=""></option>
                 </select>History
@@ -266,10 +268,42 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;DB:
                 <button id="btndb1" class="btndb dbactive" onclick="selectDb(1)" >1</button>
                 <button id="btndb2" class="btndb" onclick="selectDb(2)" >2</button>
+                &nbsp;&nbsp;&nbsp;
+                <image class="img" title="options" onclick="e('dlgSearch').showModal()" src="settings2w.png" />
                 <button id="btnSearch" class="btnml right" onclick="doSearch();" >Search</button>
             </div>
             <div id="divSearchList" style="overflow: auto;"></div>
         </div>
+        <dialog id="dlgSearch" >
+            <h1>Search Settings</h1>
+            <table width="100%">
+                <tr>
+                    <td>Max Results:</td>
+                    <td><input type="search" id="txtSearchMaxResults" save="value" class="max"></td>
+                </tr>
+                <tr>
+                    <td>Show:</td>
+                    <td><select id="selSearchShow" save="value">
+                        <option value="path">path</option>
+                        <option value="file">file</option>
+                    </select>
+                </tr>
+                <tr>
+                    <td>Sort:</td>
+                    <td><select id="selSearchSort" save="value">
+                        <option value="path">path</option>
+                        <option value="file">file</option>
+                        <option value="size">size</option>
+                    </select>
+                    &nbsp;&nbsp;&nbsp;
+                    <select id="selSearchSortDir" save="value">
+                        <option value="asc">asc</option>
+                        <option value="desc">desc</option>
+                    </select></td>
+                </tr>
+            </table><br>
+            <button onclick="e('dlgSearch').close(); saveParams()">Close</button>
+        </dialog>
 
         <div id="divKeydef" class="tabcontent" >
             <input type="checkbox" id="chkEditkey">edit next key
@@ -321,7 +355,7 @@
             </div>
         </div>
         <dialog id="dlgTextList">
-            TextList:<br/><textarea id="txtListEdit" rows="12" save="value"></textarea><br><br>
+            Text List:<br><br><textarea id="txtListEdit" rows="12" save="value"></textarea><br><br>
             <button onclick="dlgTextList.close(); reload();">Close</button>
         </dialog>
         

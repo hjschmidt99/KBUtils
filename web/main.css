@@ -70,13 +70,13 @@ dialog {
     min-width: 60%;
     border-radius: 8px;
     border: 2px solid black;
-    background-color: darkslateblue;
+    background-color: rgb(40, 40, 40);
     color: white;
     overflow: hidden;
 }
 
 dialog td {
-    background-color: darkslateblue;
+    background-color: rgb(40, 40, 40);
     color: white;
     overflow: hidden;
 }

@@ -39,6 +39,9 @@ xparam = {
     "txtMaxitemsize": "5000",
     "chkMovieList": False,
     "selectedDb": 1,
+    "selSearchShow": "path",
+    "selSearchSort": "path",
+    "selSearchSort": "asc",
 }
 
 # load parameter file, always merge to xparam
@@ -285,7 +288,8 @@ def mlSearch(text, fromPaste=False):
     if any(c in text for c in ["\\", "://", "<", ">"]): return
     if fromPaste: eel.movielistPaste(text)
     res = ML.search(text)
-    html = ML.renderSearchResult(res)
+    item = xparam["selSearchShow"]
+    html = ML.renderSearchResult(res, item)
     eel.movielistUpdate(html)
 
 @eel.expose

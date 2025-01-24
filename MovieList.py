@@ -34,14 +34,14 @@ def makeQuery(s, mode="fuzzy"):
         q = {"$text": {"$search": s}}
     return q
 
-def renderSearchResult(res):
+def renderSearchResult(res, item="path"):
     h = ""
     h = h + t("th", "Path", "")
     h = h + t("th", "Action", "width='80px' style='text-align:center'")
     rows = ""
     for i, x in enumerate(res):
         d = ""        
-        d = d + t("td", x["path"], "class='wrapword'")
+        d = d + t("td", x[item], "class='wrapword'")
         img = f'<img class="img1" title="copy" src="clipboard1.png" onclick="eel.mlAction(0, {i})">'
         img = img + f'<img class="img1" title="play" src="play.png" onclick="eel.mlAction(1, {i})">'
         img = img + f'<img class="img1" title="explore" src="explore.png" onclick="eel.mlAction(2, {i})">'
