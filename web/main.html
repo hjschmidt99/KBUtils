@@ -112,7 +112,7 @@
             eel.expose(movielistPaste)
             function movielistPaste(text) {
                 txtSearchText.value = text;
-                addMru(txtSearchText);
+                addMru(txtSearchText, 40);
                 lastSearch = text;
             }
             
@@ -132,7 +132,7 @@
             }
 
             function doSearch() {
-                addMru(txtSearchText);
+                addMru(txtSearchText, 40);
                 eel.mlSearch(txtSearchText.value);
             }
 
