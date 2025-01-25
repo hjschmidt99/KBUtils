@@ -80,7 +80,7 @@ class ClipMon:
         if len(s) > maxTextLen: return
 
         n = s.splitlines()[0]
-        #for c in "<>\"\'": n = n.replace(c, "_")
+        for c in "<>": n = n.replace(c, f"&#{ord(c)}")
         x = {
             "time": datetime.datetime.now().replace(microsecond=0).isoformat(sep=" "),
             "size": len(s),
