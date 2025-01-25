@@ -253,7 +253,7 @@ def doKey(name, mode, param):
 
 fnclips = fn + ".clips.json"
 cm = clipmon.ClipMon(fnclips, xparam)
-lastClip = cm.clips[len(cm.clips) - 1]["data"]
+lastClip = cm.clips[len(cm.clips) - 1]["data"] if len(cm.clips) > 0 else ""
 clipsWatch = fileWatch.AutoSave(fnclips, 300)
 
 @eel.expose
