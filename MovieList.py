@@ -36,7 +36,7 @@ def makeQuery(s, mode="fuzzy"):
 
 def renderSearchResult(res, item="path"):
     h = ""
-    h = h + t("th", "Path", "")
+    h = h + t("th", f"Path ({len(res)} results)", "")
     h = h + t("th", "Action", "width='80px' style='text-align:center'")
     rows = ""
     for i, x in enumerate(res):
