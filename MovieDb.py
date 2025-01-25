@@ -80,8 +80,10 @@ def addMany(src):
         for fn1 in glob.iglob(os.path.join(src, "**", "**"), recursive=True):
             addFile(fn1)
 
-def search(q, limit=200, remove_id=True):
-    cursor = coll.find(q, limit=limit)
+def search(q, sort, sortDir, limit, remove_id=True):
+    cursor = coll.find(q)
+    if sort != "": cursor = cursor.sort(sort, sortDir)
+    if limit > 0: cursor = cursor.limit(limit)
     res = []
     for x in cursor:
         if remove_id: del x["_id"]

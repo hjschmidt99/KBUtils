@@ -10,10 +10,10 @@ def init(i):
     mdb.collectionName = f"files{i}"
     mdb.dbConnect()
 
-def search(q, limit=200):
+def search(q, sort, sortDir, limit):
     global res
     q = makeQuery(q)
-    res = mdb.search(q, limit)
+    res = mdb.search(q, sort, sortDir, limit)
     return res
 
 def makeQuery(s, mode="fuzzy"):
@@ -47,8 +47,8 @@ def renderSearchResult(res, item="path"):
         img = img + f'<img class="img1" title="explore" src="explore.png" onclick="eel.mlAction(2, {i})">'
         d = d + t("td", img, "style='text-align:center'")
         a = f'onclick="mlDlg({i})"'
-        rows = t("tr", d, a) + "\n" + rows
-    rows = t("tr", h) + "\n" + rows
+        rows = rows + "\n" + t("tr", d, a)
+    rows = t("tr", h) + rows + "\n"
     html = t("table", rows, "class='movielist-table max'")
     return html    
 

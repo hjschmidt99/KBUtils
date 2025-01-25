@@ -287,7 +287,10 @@ ML.init(xparam["selectedDb"])
 def mlSearch(text, fromPaste=False):
     if any(c in text for c in ["\\", "://", "<", ">"]): return
     if fromPaste: eel.movielistPaste(text)
-    res = ML.search(text)
+    sort = xparam["selSearchSort"]
+    sortDir = -1 if xparam["selSearchSortDir"] == "desc" else 1
+    limit = int(xparam["txtSearchMaxResults"])
+    res = ML.search(text, sort, sortDir, limit)
     item = xparam["selSearchShow"]
     html = ML.renderSearchResult(res, item)
     eel.movielistUpdate(html)
