@@ -34,7 +34,7 @@ def tele5(text):
     res = re.findall(r"\r\nx\r\n([^\r\n]*)\r\n", text)
 
     ignore = ["Star Trek", "Ruhelose Seelen", "Raumschiff Enterprise", "Relic Hunter", "Arabellas Crime Time",
-              "In Search of Darkness", "Eli Roth's GHOSTS"]
+              "In Search of Darkness", "Eli Roth's GHOSTS", "Robin Hood -", "Doctor Who -"]
 
     for x in res:
         print(x)

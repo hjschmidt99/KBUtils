@@ -131,6 +131,13 @@
                     doSearch();
             }
 
+            function seachTrail() {
+                var s = txtSearchText.value;
+                s = s.split(/[\s,\)\-]+/).pop()
+                txtSearchText.value = s;
+                doSearch();
+            }
+
             function doSearch() {
                 addMru(txtSearchText, 40);
                 eel.mlSearch(txtSearchText.value);
@@ -263,8 +270,10 @@
                     onfocus="this.selectedIndex=-1" style="width: 20px;">
                     <option value=""></option>
                 </select>History
-                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;
                 <button class="btnml" onclick="txtSearchText.value=lastSearch; doSearch();" >Last</button>
+                &nbsp;
+                <button class="btnml" onclick="seachTrail();" >Trail</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;DB:
                 <button id="btndb1" class="btndb dbactive" onclick="selectDb(1)" >1</button>
                 <button id="btndb2" class="btndb" onclick="selectDb(2)" >2</button>

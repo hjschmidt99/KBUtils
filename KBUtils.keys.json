@@ -80,9 +80,14 @@
         "mode": "editclip",
         "param": "strip"
     },
-    "btnKey16": {
+    "btnKey17": {
         "name": "Undo",
         "mode": "keymacro",
         "param": "[\"alt+tab\", 500, \"ctrl+z\"]"
+    },
+    "btnKey16": {
+        "name": "browser get_file",
+        "mode": "keymacro",
+        "param": "[\"alt+tab\", 500, \"ctrl+shift+e\", 800, \"tab, tab\", 200, \"$get_file\"]"
     }
 }
