@@ -100,10 +100,14 @@ def doCmd(cmd, p=None):
     if cmd == "Tele5":
         sendMacro("CopyAll", sendCallback, "tele5")
 
+    if cmd == "Filename":
+        sendCallback("filename")
+
 def sendCallback(type):
     ign = ["small screenshot"]
     if type == "text2Link": eel.text2Link(scripts.text2linkIngnore(clipboard.paste(), ign))
     if type == "tele5": eel.text2Link(scripts.tele5(clipboard.paste()))
+    if type == "filename": eel.text2Link(scripts.filename(wcbx.cbText(False).strip()))
 
 
 ### Send keypresses #######################################

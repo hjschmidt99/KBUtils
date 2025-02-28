@@ -52,3 +52,12 @@ def tele5(text):
 
     return s
 
+
+def filename(text):
+    res = []
+    for x in text.splitlines():
+        p1, f1 = os.path.split(x)
+        f2, ex2 = os.path.splitext(f1)
+        res.append(f2)
+    return "\n".join(res)
+
