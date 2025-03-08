@@ -10,9 +10,11 @@ def init(i):
     mdb.collectionName = f"files{i}"
     mdb.dbConnect()
 
-def search(q, sort, sortDir, limit):
+def search(s, sort, sortDir, limit):
     global res
-    q = makeQuery(q)
+    s = s.replace(" (4-3)", "")
+    s = s.replace(" (crop)", "")
+    q = makeQuery(s)
     res = mdb.search(q, sort, sortDir, limit)
     return res
 

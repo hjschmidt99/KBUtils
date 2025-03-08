@@ -104,8 +104,7 @@ def doCmd(cmd, p=None):
         sendCallback("filename")
 
 def sendCallback(type):
-    ign = ["small screenshot"]
-    if type == "text2Link": eel.text2Link(scripts.text2linkIngnore(clipboard.paste(), ign))
+    if type == "text2Link": eel.text2Link(scripts.text2linkIngnore(clipboard.paste()))
     if type == "tele5": eel.text2Link(scripts.tele5(clipboard.paste()))
     if type == "filename": eel.text2Link(scripts.filename(wcbx.cbText(False).strip()))
 

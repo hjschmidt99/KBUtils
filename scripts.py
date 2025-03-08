@@ -20,7 +20,8 @@ def text2linkAdaptLine(x):
     return x
 
 
-def text2linkIngnore(text, ign):
+def text2linkIngnore(text):
+    ign = ["small screenshot"]
     res = []
     for x in text.splitlines():
         if not any(x1 in x for x1 in ign):
