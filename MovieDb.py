@@ -50,7 +50,7 @@ def checkRoot(fn1):
     cursor = coll.find(q, limit=1)
     for x in cursor:
         return True
-    res = input("\nroot folder '{root}' not yet in current DB! Continue? [y|N]").strip().lower()
+    res = input(f"\nroot folder '{root}' not yet in current DB! Continue? [y|N]").strip().lower()
     if res == "y":
         return True
     return False
