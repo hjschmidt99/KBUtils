@@ -89,5 +89,20 @@
         "name": "browser get_file",
         "mode": "keymacro",
         "param": "[\"alt+tab\", 500, \"ctrl+shift+e\", 800, \"tab, tab\", 200, \"$get_file\"]"
+    },
+    "btnKey25": {
+        "name": "fernss",
+        "mode": "internal",
+        "param": "fernsehserien"
+    },
+    "btnKey26": {
+        "name": "fernssSel",
+        "mode": "internal",
+        "param": "fernsehserienSel"
+    },
+    "btnKey27": {
+        "name": "fernssCB",
+        "mode": "internal",
+        "param": "fernsehserienCB"
     }
 }

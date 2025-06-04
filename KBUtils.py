@@ -18,6 +18,7 @@ import scripts
 import keymacro
 import clipmon
 import MovieList as ML
+import fernsehserien as fss
 
 eel.init('web')
 
@@ -115,6 +116,7 @@ macros = {
     "Marco1": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del"],
     "Marco2": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del, enter", 500, "down"],
     "CopyAll": ["alt+tab", 500, "ctrl+a, ctrl+c, ctrl+shift+home, ctrl+shift+home", 500],
+    "Copy": ["alt+tab", 500, "ctrl+c", 500],
 }
 
 km = keymacro.KeyMacro()
@@ -197,7 +199,8 @@ keyOptions = {
     "keymacro": [],
     "editclip": ["", "strip", "lower", "upper", "capwords", "urlencode", "urldecode", 
                  "b64decode", "b64encode", "totext", "time2epoch", "epoch2time"],
-    "internal": ["", "bufClear", "bufAppend", "bufAppendLine", "bufCopy"],
+    "internal": ["", "bufClear", "bufAppend", "bufAppendLine", "bufCopy", 
+                 "fernsehserien", "fernsehserienSel", "fernsehserienCB"],
     "external": [],
 }
 
@@ -247,6 +250,9 @@ def doKey(name, mode, param):
 
         if mode == "internal":
             if param.startswith("buf"): doBuf(param)
+            if param == "fernsehserien": sendMacro("CopyAll", fss.sendCallback, "fernss")
+            if param == "fernsehserienSel": sendMacro("Copy", fss.sendCallback, "fernss")
+            if param == "fernsehserienCB": fss.sendCallback("fernss")
 
     except:
         traceback.print_exc()
