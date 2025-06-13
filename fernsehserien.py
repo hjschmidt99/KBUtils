@@ -16,7 +16,7 @@ def parseTitle(t):
     lasttitle = title
     return title
 
-def parseEvents(t, title):
+def parseEvents1(t, title):
     # Di. 03.06.2025 20:15–21:05\nVOXup\n136 a 7.07 a Ab durch den Abwasserkanal
     # 0   1  2  3    4     4      6      7   8 9 10 11 12
     re1 = r"(.{2}\.) (\d{2}).(\d{2}).(\d*) (\d{2}:\d{2}).(\d{2}:\d{2})\s*(.*)\s"
@@ -37,15 +37,38 @@ def parseEvents(t, title):
         a += s + "\r\n"
     return a
 
-def parse(t):
+def parseEvents2(t, title):
+    # Di. 03.06.2025 20:15–21:05\nVOXup\n136 Ab durch den Abwasserkanal
+    # 0   1  2  3    4     4      6      7   8
+    re1 = r"(.{2}\.) (\d{2}).(\d{2}).(\d*) (\d{2}:\d{2}).(\d{2}:\d{2})\s*(.*)\s"
+    re1 += r"(\d+)\s(.*)"
+    pattern1 = re.compile(re1, re.IGNORECASE)
+    res1 = pattern1.findall(t)
+
+    s = json.dumps(res1, indent=4)
+    print(s)
+    print(len(res1))
+
+    chan = ""
+    a = ""
+    for x in res1:
+        if not chan and x[6]: chan = x[6]
+        s = f"{x[0]} {x[1]}.{x[2]}.{x[3]} {x[4]}-{x[5]} - {chan} - {title} "
+        s += f"{x[7]}. {x[8]}"
+        a += s + "\r\n"
+    return a
+
+def parse(t, mode=1):
     t = t.replace("\r", "")
     title = parseTitle(t)
-    a = parseEvents(t, title)
+    if mode == 1: a = parseEvents1(t, title)
+    if mode == 2: a = parseEvents2(t, title)
     return a
 
 def sendCallback(type):
     #todo: use type for different regex
-    if type == "fernss": clipboard.copy(parse(clipboard.paste()))
+    if type == "fernss": clipboard.copy(parse(clipboard.paste(), 1))
+    if type == "fernss2": clipboard.copy(parse(clipboard.paste(), 2))
 
 if __name__ == "__main__":
     try:

@@ -104,5 +104,10 @@
         "name": "fernssCB",
         "mode": "internal",
         "param": "fernsehserienCB"
+    },
+    "btnKey28": {
+        "name": "fernss",
+        "mode": "internal",
+        "param": "fernsehserien2"
     }
 }
