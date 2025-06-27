@@ -5,23 +5,31 @@ import datetime
 import glob
 import json
 import pymongo
+import traceback
 
-connStr = "mongodb://localhost:27017/"
 dbName = "db"
 collectionName = "files1"
 indexedField = "file"
 extFilter = [".ts", ".mp4", ".mpg", ".vob", ".avi", ".wmv", ".mpeg", ".flv", ".asf"]
 client = None
 
-def dbConnect():
+def dbConnect(server=None):
     global client, db, coll, roots
     roots = []
-    if client: client.close()
-    client = pymongo.MongoClient(connStr)
-    db = client[dbName]
-    coll = db[collectionName]
-    if indexedField + "_text" not in coll.list_indexes():
-        coll.create_index({indexedField: "text"})
+    try:
+        if client: client.close()
+        if server == None: server = "localhost" 
+        connStr = f"mongodb://{server}:27017/"
+        client = pymongo.MongoClient(connStr, timeoutMS=1000)
+        db = client[dbName]
+        coll = db[collectionName]
+        if indexedField + "_text" not in coll.list_indexes():
+            coll.create_index({indexedField: "text"})
+    except:
+        traceback.print_exc()
+        client = None
+        db = None
+        coll = None
 
 def dbItem(path, extFilter):
     p1, f1 = os.path.split(path)
@@ -56,16 +64,19 @@ def checkRoot(fn1):
     return False
 
 def addFile(fn1):
-    x1 = coll.find_one({"path": fn1})
-    if not x1:
-        if not checkRoot(fn1):
-            #return False
-            # for now do a hard exit
-            sys.exit()
-        x2 = dbItem(fn1, extFilter)
-        if x2:
-            print(fn1)
-            coll.insert_one(x2)
+    try:
+        x1 = coll.find_one({"path": fn1})
+        if not x1:
+            if not checkRoot(fn1):
+                #return False
+                # for now do a hard exit
+                sys.exit()
+            x2 = dbItem(fn1, extFilter)
+            if x2:
+                print(fn1)
+                coll.insert_one(x2)
+    except:
+        traceback.print_exc()
     return True
 
 def addMany(src):
@@ -81,41 +92,47 @@ def addMany(src):
             addFile(fn1)
 
 def search(q, sort, sortDir, limit, remove_id=True):
-    cursor = coll.find(q)
-    if sort != "": cursor = cursor.sort(sort, sortDir)
-    if limit > 0: cursor = cursor.limit(limit)
     res = []
-    for x in cursor:
-        if remove_id: del x["_id"]
-        res.append(x)
-    print(json.dumps(res, indent=4))
+    try:    
+        cursor = coll.find(q)
+        if sort != "": cursor = cursor.sort(sort, sortDir)
+        if limit > 0: cursor = cursor.limit(limit)
+        for x in cursor:
+            if remove_id: del x["_id"]
+            res.append(x)
+        print(json.dumps(res, indent=4))
+    except:
+        traceback.print_exc()
     return res
 
 def purgeFiles():
-    print(f"purging files in DB ({collectionName})")
-    t0 = datetime.datetime.now()
-    # find files with size
-    q = {"size": {"$gt": 0}}
-    cursor = coll.find(q)
-    rem = []
-    n = 0
-    for x in cursor:
-        n = n + 1
-        path = x["path"]
-        # is root dir available?
-        a = path.split("\\")
-        root = f"{a[0]}\\{a[1]}"
-        if os.path.exists(root):
-            # does file still exist?
-            if not os.path.isfile(path):
-                print(f"remove: {path}")
-                rem.append(x["_id"])
-        else:
-            print(f'root not available: {path}')
-    for rx in rem:
-        coll.delete_one({"_id": rx})
-    t1 = datetime.datetime.now()
-    print(f"purged {len(rem)} files of {n} db entries in {t1 - t0} sec")
+    try:
+        print(f"purging files in DB ({collectionName})")
+        t0 = datetime.datetime.now()
+        # find files with size
+        q = {"size": {"$gt": 0}}
+        cursor = coll.find(q)
+        rem = []
+        n = 0
+        for x in cursor:
+            n = n + 1
+            path = x["path"]
+            # is root dir available?
+            a = path.split("\\")
+            root = f"{a[0]}\\{a[1]}"
+            if os.path.exists(root):
+                # does file still exist?
+                if not os.path.isfile(path):
+                    print(f"remove: {path}")
+                    rem.append(x["_id"])
+            else:
+                print(f'root not available: {path}')
+        for rx in rem:
+            coll.delete_one({"_id": rx})
+        t1 = datetime.datetime.now()
+        print(f"purged {len(rem)} files of {n} db entries in {t1 - t0} sec")
+    except:
+        traceback.print_exc()
 
 if __name__ == "__main__":
     dbConnect()

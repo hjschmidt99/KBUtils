@@ -6,9 +6,9 @@ import datetime
 def t(n, d, a=""):
     return f"<{n} {a}>{d}</{n}>"
 
-def init(i):
+def init(server, i):
     mdb.collectionName = f"files{i}"
-    mdb.dbConnect()
+    mdb.dbConnect(server)
 
 def search(s, sort, sortDir, limit):
     global res

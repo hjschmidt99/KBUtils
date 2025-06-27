@@ -36,6 +36,7 @@ xparam = {
     "chkCR": False,
     "chkDown": False,
     "txtListEdit": "prefix1\n#prefix2\nprefix3",
+    "txtDbServer": "localhost",
     "txtMaxitems": "500",
     "txtMaxitemsize": "5000",
     "chkMovieList": False,
@@ -291,7 +292,7 @@ def newText(s):
 
 ### MovileList ############################################
 
-ML.init(xparam["selectedDb"])
+ML.init(xparam["txtDbServer"], xparam["selectedDb"])
 
 @eel.expose
 def mlSearch(text, fromPaste=False):
@@ -319,7 +320,7 @@ def mlData(i):
 
 @eel.expose
 def mlDb(i):
-    ML.init(i)
+    ML.init(xparam["txtDbServer"], i)
     x = {"selectedDb": i}
     saveParams(x)
 
