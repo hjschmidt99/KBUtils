@@ -36,7 +36,7 @@ xparam = {
     "chkCR": False,
     "chkDown": False,
     "txtListEdit": "prefix1\n#prefix2\nprefix3",
-    "txtDbServer": "localhost",
+    "txtDbServer": "mongodb://192.168.0.124:27017/",
     "txtMaxitems": "500",
     "txtMaxitemsize": "5000",
     "chkMovieList": False,

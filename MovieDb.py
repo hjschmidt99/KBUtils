@@ -13,18 +13,20 @@ indexedField = "file"
 extFilter = [".ts", ".mp4", ".mpg", ".vob", ".avi", ".wmv", ".mpeg", ".flv", ".asf"]
 client = None
 
-def dbConnect(server=None):
+def dbConnect(connStr=None):
     global client, db, coll, roots
     roots = []
     try:
         if client: client.close()
-        if server == None: server = "localhost" 
-        connStr = f"mongodb://{server}:27017/"
-        client = pymongo.MongoClient(connStr, timeoutMS=1000)
+        if connStr == None: connStr = "mongodb://localhost:27017/"
+        client = pymongo.MongoClient(connStr, timeoutMS=3000)
         db = client[dbName]
         coll = db[collectionName]
-        if indexedField + "_text" not in coll.list_indexes():
-            coll.create_index({indexedField: "text"})
+        try:
+            if indexedField + "_text" not in coll.list_indexes():
+                coll.create_index({indexedField: "text"})
+        except:
+            traceback.print_exc()
     except:
         traceback.print_exc()
         client = None
