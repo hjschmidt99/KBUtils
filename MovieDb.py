@@ -18,7 +18,7 @@ def dbConnect(connStr=None):
     roots = []
     try:
         if client: client.close()
-        if connStr == None: connStr = "mongodb://localhost:27017/"
+        if not connStr: connStr = "mongodb://localhost:27017/"
         client = pymongo.MongoClient(connStr, timeoutMS=3000)
         db = client[dbName]
         coll = db[collectionName]
