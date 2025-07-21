@@ -16,7 +16,7 @@ def parseTitle(t):
     lasttitle = title
     return title
 
-def parseEvents1(t, title):
+def parseEvents1a(t, title):
     # Di. 03.06.2025 20:15–21:05\nVOXup\n136 a 7.07 a Ab durch den Abwasserkanal
     # 0   1  2  3    4     4      6      7   8 9 10 11 12
     re1 = r"(.{2}\.) (\d{2}).(\d{2}).(\d*) (\d{2}:\d{2}).(\d{2}:\d{2})\s*(.*)\s"
@@ -37,7 +37,51 @@ def parseEvents1(t, title):
         a += s + "\r\n"
     return a
 
+def parseEvents1(t, title):
+    # Di. 03.06.2025 20:15–21:05\nVOXup\n136 a 7.07 a Ab durch den Abwasserkanal
+    # 0                           1      2   3 4 5  6 7
+    re1 = r"(.{2}\. \d{2}.\d{2}.\d* \d{2}:\d{2}.\d{2}:\d{2})\s*(.*)\s"
+    re1 += r"(\d+)\s?([a-z]?) (\d+)\.(\d+)\s?([a-z]?)\s(.*)"
+    pattern1 = re.compile(re1, re.IGNORECASE)
+    res1 = pattern1.findall(t)
+
+    s = json.dumps(res1, indent=4)
+    print(s)
+    print(len(res1))
+
+    chan = ""
+    a = ""
+    for x in res1:
+        if not chan and x[1]: chan = x[1]
+        s = f"{x[0]} - {chan} - {title} "
+        s += f"s{int(x[4]):02d}e{int(x[5]):03d}{x[6]} {x[2]}{x[3]}. {x[7]}"
+        s = s.removesuffix(" NEU")
+        a += s + "\r\n"
+    return a
+
 def parseEvents2(t, title):
+    # Di. 03.06.2025 20:15–21:05\nVOXup\n136 Ab durch den Abwasserkanal
+    # 0                           1      2   3
+    re1 = r"(.{2}\. \d{2}.\d{2}.\d* \d{2}:\d{2}.\d{2}:\d{2})\s*(.*)\s"
+    re1 += r"(\d+)\s(.*)"
+    pattern1 = re.compile(re1, re.IGNORECASE)
+    res1 = pattern1.findall(t)
+
+    s = json.dumps(res1, indent=4)
+    print(s)
+    print(len(res1))
+
+    chan = ""
+    a = ""
+    for x in res1:
+        if not chan and x[1]: chan = x[1]
+        s = f"{x[0]} - {chan} - {title} "
+        s += f"{x[2]}. {x[3]}"
+        s = s.removesuffix(" NEU")
+        a += s + "\r\n"
+    return a
+
+def parseEvents2a(t, title):
     # Di. 03.06.2025 20:15–21:05\nVOXup\n136 Ab durch den Abwasserkanal
     # 0   1  2  3    4     4      6      7   8
     re1 = r"(.{2}\.) (\d{2}).(\d{2}).(\d*) (\d{2}:\d{2}).(\d{2}:\d{2})\s*(.*)\s"
