@@ -60,6 +60,10 @@ a {
     text-decoration: none;
 }
 
+#divText2Link a {
+    text-decoration: none;
+}
+
 textarea {
     width: 100%;
     resize: none;
