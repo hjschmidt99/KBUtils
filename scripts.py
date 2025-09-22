@@ -59,6 +59,7 @@ def filename(text):
     for x in text.splitlines():
         p1, f1 = os.path.split(x)
         f2, ex2 = os.path.splitext(f1)
+        f2 = f2.replace(" (crop)", "").replace(" (4-3)", "")
         res.append(f2)
     return "\n".join(res)
 
