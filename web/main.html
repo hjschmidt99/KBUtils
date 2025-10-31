@@ -28,6 +28,7 @@
                 x = await eel.saveParams(x, closing);
             }
             
+            eel.expose(loadParams)
             async function loadParams(first=false) {
                 var x = await eel.loadParams(first)();
                 setParams(x);

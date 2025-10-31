@@ -49,23 +49,45 @@ xparam = {
 # load parameter file, always merge to xparam
 fn = os.path.splitext(os.path.abspath(sys.argv[0]))[0]
 fncfg = fn + ".json"
-if os.path.exists(fncfg):
-    with open(fncfg, 'r') as f1:
-        x = json.load(f1)
-    for k in x.keys():
-        xparam[k] = x[k]
+lastxp = ""
+
+def loadParamsFile():
+    global lastxp
+    if os.path.exists(fncfg):
+        with open(fncfg, 'r') as f1:
+            x = json.load(f1)
+        for k in x.keys():
+            xparam[k] = x[k]
+    xp = json.dumps(xparam, indent=4)
+    if xp != lastxp:
+        lastxp = xp
+        return True
+    return False
+
+loadParamsFile()
+paramsWatch = fileWatch.FileWatch(fncfg, 30)
+
+def checkParamsFile():
+    if not paramsWatch.checkFile(): return
+    print(f"Params file changed, reloading...")
+    if loadParamsFile():
+        eel.loadParams()
 
 def dump(o):
     print(json.dumps(o, indent=4))
 
 @eel.expose
 def saveParams(x, closing=False):
+    global lastxp
     if closing: 
         cm.saveClips(cm.clips)
     for k in x.keys():
         xparam[k] = x[k]
-    with open(fncfg, 'w') as f1:
-        json.dump(xparam, f1, indent=4)
+    xp = json.dumps(xparam, indent=4)
+    if xp != lastxp:
+        lastxp = xp
+        with open(fncfg, 'w') as f1:
+            f1.write(xp)
     return xparam
 
 @eel.expose
@@ -379,8 +401,12 @@ while True:
             lastClip = clip
             if xparam["chkClipmon"]: newText(clip)
             if xparam["chkMovieList"]: mlSearch(clip, True)
-
     except:
         lastexp = traceback.format_exc()
         print(lastexp)
  
+    try: 
+        checkParamsFile()
+    except:
+        lastexp = traceback.format_exc()
+        print(lastexp)

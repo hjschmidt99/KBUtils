@@ -21,4 +21,22 @@ class AutoSave:
         if debug: print(f"{datetime.datetime.now()} AutoSave: save needed for {self.name}")
         return True
     
+class FileWatch: 
+    def __init__(self, fname, interval=60):
+        self.fname = fname
+        self.td = interval
+        self.nextCheck = int(time.time()) + self.td
+        self.lastMod = os.path.getmtime(fname) if os.path.exists(fname) else 0
+
+    def checkFile(self):
+        t0 = time.time()
+        if int(t0) < self.nextCheck: return False
+        self.nextCheck = int(t0) + self.td
+        if not os.path.exists(self.fname): return False
+        currentMod = os.path.getmtime(self.fname)
+        if currentMod <= self.lastMod: return False
+        self.lastMod = currentMod
+        return True
+            
+       
     
