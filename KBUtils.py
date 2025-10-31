@@ -118,6 +118,7 @@ macros = {
     "Marco2": ["alt+tab", 500, "f2", 200, "right, shift+ctrl+left, shift+left, del, enter", 500, "down"],
     "CopyAll": ["alt+tab", 500, "ctrl+a, ctrl+c, ctrl+shift+home, ctrl+shift+home", 500],
     "Copy": ["alt+tab", 500, "ctrl+c", 500],
+    "Undo": ["alt+tab", 500, "ctrl+z", 500],
 }
 
 km = keymacro.KeyMacro()
