@@ -56,6 +56,7 @@ def parseEvents2(t, title):
         if not chan and x[1]: chan = x[1]
         s = f"{x[0]} - {chan} - {title} "
         s += f"{x[2]}. {x[3]}"
+        s = s.removesuffix(" FREE-TV-NEU")
         s = s.removesuffix(" NEU")
         a += s + "\r\n"
     return a
