@@ -7,6 +7,14 @@ import re
 
 lasttitle = "fernsehserien"
 
+def procText(s):
+    s = s.removesuffix(" FREE-TV-NEU")
+    s = s.removesuffix(" NEU")
+    s = s.replace("’", "'")
+    s = s.replace(": ", " - ")
+    s = s.replace("  ", " ")
+    return s
+
 def parseTitle(t):
     global lasttitle
     re2 = r"fernsehserien\.de Logo\sfernsehserien.de\s(.*)"
@@ -34,7 +42,7 @@ def parseEvents1(t, title):
         if not chan and x[1]: chan = x[1]
         s = f"{x[0]} - {chan} - {title} "
         s += f"s{int(x[4]):02d}e{int(x[5]):03d}{x[6]} {x[2]}{x[3]}. {x[7]}"
-        s = s.removesuffix(" NEU")
+        s = procText(s)
         a += s + "\r\n"
     return a
 
@@ -56,8 +64,7 @@ def parseEvents2(t, title):
         if not chan and x[1]: chan = x[1]
         s = f"{x[0]} - {chan} - {title} "
         s += f"{x[2]}. {x[3]}"
-        s = s.removesuffix(" FREE-TV-NEU")
-        s = s.removesuffix(" NEU")
+        s = procText(s)
         a += s + "\r\n"
     return a
 
