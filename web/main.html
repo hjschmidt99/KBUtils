@@ -30,7 +30,18 @@
             
             eel.expose(loadParams)
             async function loadParams(first=false) {
+                console.log("loadParams entry");
                 var x = await eel.loadParams(first)();
+                console.log("loadParams setParams");
+                setParams(x);
+                makeTextList();
+                selectDb(x.selectedDb)
+                initialized = true;
+            }
+            
+            eel.expose(reloadParams)
+            function reloadParams(x) {
+                console.log("reloadParams setParams");
                 setParams(x);
                 makeTextList();
                 selectDb(x.selectedDb)

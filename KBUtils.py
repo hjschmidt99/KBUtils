@@ -65,13 +65,14 @@ def loadParamsFile():
     return False
 
 loadParamsFile()
-paramsWatch = fileWatch.FileWatch(fncfg, 30)
+paramsWatch = fileWatch.FileWatch(fncfg, 10)
 
 def checkParamsFile():
     if not paramsWatch.checkFile(): return
-    print(f"Params file changed, reloading...")
+    print(f"Params file modified...")
     if loadParamsFile():
-        eel.loadParams()
+        print(f"Params file changed, reloading...")
+        eel.reloadParams(xparam)
 
 def dump(o):
     print(json.dumps(o, indent=4))
