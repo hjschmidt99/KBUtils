@@ -57,6 +57,7 @@ function setParams(x) {
         opt.value = v;
         item.add(opt, null);
       });
+      item.selectedIndex=-1;
     } 
   });
 }
@@ -88,6 +89,7 @@ function addMru(item, mrumax=10) {
 function useMru(item) {
   var txt = document.getElementById(item.id.replace("_mru", ""));
   txt.value = item.value;
+  item.selectedIndex=-1;
 }
 
 
