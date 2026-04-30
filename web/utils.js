@@ -84,6 +84,7 @@ function addMru(item, mrumax=10) {
 
   while (opts.length > mrumax) 
     mru.removeChild(opts[opts.length - 1]);
+  mru.selectedIndex=-1;
 }
 
 function useMru(item) {
